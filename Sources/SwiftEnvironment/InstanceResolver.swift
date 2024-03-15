@@ -20,6 +20,10 @@ struct StaticInstanceResolver<Value>: InstanceResolver {
     
     let value: Value
     
+    @inlinable init(value: Value) {
+        self.value = value
+    }
+    
     @inlinable func resolve<V>(for type: V.Type) -> V? {
         value as? V
     }
@@ -29,9 +33,9 @@ struct StaticInstanceResolver<Value>: InstanceResolver {
 
 final class SingletonInstanceResolver<Value>: InstanceResolver {
     
-    var instance: Value?
-    var resolver: (() -> Value)?
-    let queue: DispatchQueue?
+    private(set) var instance: Value?
+    private var resolver: (() -> Value)?
+    private let queue: DispatchQueue?
     
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
         self.resolver = resolver
@@ -55,8 +59,8 @@ final class SingletonInstanceResolver<Value>: InstanceResolver {
 
 struct TransientInstanceResolver<Value>: InstanceResolver {
     
-    var resolver: () -> Value
-    let queue: DispatchQueue?
+    private var resolver: () -> Value
+    private let queue: DispatchQueue?
     
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
         self.resolver = resolver
@@ -76,9 +80,9 @@ struct TransientInstanceResolver<Value>: InstanceResolver {
 
 final class WeakInstanceResolver<Value: AnyObject>: InstanceResolver {
     
-    weak var instance: Value?
-    var resolver: () -> Value
-    let queue: DispatchQueue?
+    private(set) weak var instance: Value?
+    private var resolver: () -> Value
+    private let queue: DispatchQueue?
     
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
         self.resolver = resolver

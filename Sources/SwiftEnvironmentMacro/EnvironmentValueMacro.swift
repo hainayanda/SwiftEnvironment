@@ -20,7 +20,7 @@ public struct EnvironmentValueMacro: MemberMacro {
               extensionDeclaration.extendedType.as(IdentifierTypeSyntax.self)?.name.text == "EnvironmentValues" else {
             throw EnvironmentValueMacroError.attachedToInvalidType
         }
-        let keyPaths = try node.environmentValueKeys
+        let keyPaths = try node.environmentValueKeyPaths
         let environmentKeys = try extensionDeclaration.environmentKeys
         return try combine(keyPaths, with: environmentKeys).map { keyPath, environmentKey in
             let keyName = environmentKey.name.text
@@ -36,17 +36,19 @@ public struct EnvironmentValueMacro: MemberMacro {
 
 // MARK: Private functions
 
-private func combine(_ keyPaths: [String], with environmentKeys: [StructDeclSyntax]) -> [(keyPath: String, environmentKey: StructDeclSyntax)] {
-    keyPaths.enumerated().reduce(into: []) { partialResult, pair in
-        partialResult.append((pair.element, environmentKeys[pair.offset]))
+private func combine(
+    _ keyPaths: [String],
+    with environmentKeys: [StructDeclSyntax]) -> [(keyPath: String, environmentKey: StructDeclSyntax)] {
+        keyPaths.enumerated().reduce(into: []) { partialResult, pair in
+            partialResult.append((pair.element, environmentKeys[pair.offset]))
+        }
     }
-}
 
 // MARK: Private extensions
 
 private extension Array where Element: Hashable {
     var hasDuplication: Bool {
-        Set(self).count != self.count
+        Set(self).count > self.count
     }
 }
 
@@ -82,31 +84,32 @@ private extension VariableDeclSyntax {
 private extension TypeAliasDeclSyntax {
     
     var realType: String? {
-        initializer.value.as(IdentifierTypeSyntax.self)?.name.text
+        initializer.value
+            .as(IdentifierTypeSyntax.self)?
+            .name.text
     }
 }
 
 private extension StructDeclSyntax {
     
     var typeAliasValueRealType: String? {
-        memberBlock.members.compactMap {
-            $0.decl.as(TypeAliasDeclSyntax.self)
-        }
-        .first { $0.name.text == "Value" }?
-        .realType
+        memberBlock.members
+            .compactMap { $0.decl.as(TypeAliasDeclSyntax.self) }
+            .first { $0.name.text == "Value" }?
+            .realType
     }
     
     var environmentValueType: String {
         get throws {
-            let defaultValue = memberBlock.members.compactMap {
-                $0.decl.as(VariableDeclSyntax.self)
-            }
+            let defaultValue = memberBlock.members
+                .compactMap { $0.decl.as(VariableDeclSyntax.self) }
                 .first { $0.isStatic && $0.name == "defaultValue" }
+            
             guard let defaultValue else {
                 throw EnvironmentValueMacroError.cannotDetermineEnvironmentValueType
             }
             if let typeAnnotation = defaultValue.typeAnnotation,
-                typeAnnotation != "Value" {
+               typeAnnotation != "Value" {
                 return typeAnnotation
             }
             if let typeAliasValueRealType {
@@ -127,10 +130,12 @@ private extension ExtensionDeclSyntax {
             let result = memberBlock.members
                 .compactMap { $0.as(MemberBlockItemSyntax.self)?.decl.as(StructDeclSyntax.self) }
                 .filter { $0.isEnvironmentKey }
+            
             guard !result.isEmpty else {
                 throw EnvironmentValueMacroError.noEnvironmentKeyProvided
             }
             let names = result.map { $0.name.text }
+            
             guard !names.hasDuplication else {
                 throw EnvironmentValueMacroError.duplicatedEnvironmentKeys
             }
@@ -141,15 +146,17 @@ private extension ExtensionDeclSyntax {
 
 private extension StructDeclSyntax {
     var isEnvironmentKey: Bool {
-        inheritanceClause?.inheritedTypes.contains {
-            $0.type.as(IdentifierTypeSyntax.self)?.name.text == "EnvironmentKey"
-        } ?? false
+        inheritanceClause?.inheritedTypes
+            .contains {
+                $0.type.as(IdentifierTypeSyntax.self)?.name.text == "EnvironmentKey"
+            }
+        ?? false
     }
 }
 
 private extension AttributeSyntax {
     
-    var environmentValueKeys: [String] {
+    var environmentValueKeyPaths: [String] {
         get throws {
             guard let labeledSyntaxes = arguments?.as(LabeledExprListSyntax.self) else {
                 throw EnvironmentValueMacroError.noArgumentPassed
