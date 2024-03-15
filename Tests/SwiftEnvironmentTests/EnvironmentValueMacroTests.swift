@@ -38,7 +38,75 @@ final class EnvironmentValueMacroTests: XCTestCase {
             macros: ["EnvironmentValue": EnvironmentValueMacro.self]
         )
     }
+    
+    func test_givenOneGenericArgument_whenExpanded_shouldAddProperty() {
+        assertMacroExpansion(
+            oneGenericArg, expandedSource: oneGenericArgExpansion,
+            macros: ["EnvironmentValue": EnvironmentValueMacro.self]
+        )
+    }
+    
+    func test_givenOneImplicitArgument_whenExpanded_shouldAddProperty() {
+        assertMacroExpansion(
+            oneImplicitArg, expandedSource: oneImplicitArgExpansion,
+            macros: ["EnvironmentValue": EnvironmentValueMacro.self]
+        )
+    }
 }
+
+private let oneImplicitArg: String = """
+        @EnvironmentValue("dummy")
+        extension EnvironmentValues {
+            struct DummyEnvironmentKey: EnvironmentKey {
+                static let defaultValue = DummyDependency()
+            }
+        }
+        """
+
+private let oneImplicitArgExpansion: String = """
+        
+        extension EnvironmentValues {
+            struct DummyEnvironmentKey: EnvironmentKey {
+                static let defaultValue = DummyDependency()
+            }
+        
+            var dummy: DummyDependency {
+                get {
+                    self [DummyEnvironmentKey.self]
+                }
+                set {
+                    self [DummyEnvironmentKey.self] = newValue
+                }
+            }
+        }
+        """
+
+private let oneGenericArg: String = """
+        @EnvironmentValue("dummy")
+        extension EnvironmentValues {
+            struct DummyEnvironmentKey: EnvironmentKey {
+                static let defaultValue: Dependency<Some> = DummyDependency()
+            }
+        }
+        """
+
+private let oneGenericArgExpansion: String = """
+        
+        extension EnvironmentValues {
+            struct DummyEnvironmentKey: EnvironmentKey {
+                static let defaultValue: Dependency<Some> = DummyDependency()
+            }
+        
+            var dummy: Dependency<Some> {
+                get {
+                    self [DummyEnvironmentKey.self]
+                }
+                set {
+                    self [DummyEnvironmentKey.self] = newValue
+                }
+            }
+        }
+        """
 
 private let oneArg: String = """
         @EnvironmentValue("dummy")

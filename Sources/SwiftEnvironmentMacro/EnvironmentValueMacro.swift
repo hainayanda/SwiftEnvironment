@@ -69,7 +69,7 @@ private extension VariableDeclSyntax {
         bindings.first?.typeAnnotation?
             .as(TypeAnnotationSyntax.self)?
             .type.as(IdentifierTypeSyntax.self)?
-            .name.text
+            .trimmedDescription
     }
     
     var initializer: String? {
@@ -77,7 +77,7 @@ private extension VariableDeclSyntax {
             .as(FunctionCallExprSyntax.self)?
             .calledExpression
             .as(DeclReferenceExprSyntax.self)?
-            .baseName.text
+            .trimmedDescription
     }
 }
 
