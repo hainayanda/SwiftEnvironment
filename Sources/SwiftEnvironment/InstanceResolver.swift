@@ -59,7 +59,7 @@ final class SingletonInstanceResolver<Value>: InstanceResolver {
 
 struct TransientInstanceResolver<Value>: InstanceResolver {
     
-    private var resolver: () -> Value
+    private let resolver: () -> Value
     private let queue: DispatchQueue?
     
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
@@ -81,7 +81,7 @@ struct TransientInstanceResolver<Value>: InstanceResolver {
 final class WeakInstanceResolver<Value: AnyObject>: InstanceResolver {
     
     private(set) weak var instance: Value?
-    private var resolver: () -> Value
+    private let resolver: () -> Value
     private let queue: DispatchQueue?
     
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
