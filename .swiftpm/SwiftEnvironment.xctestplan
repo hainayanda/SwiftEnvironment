@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "107A543A-D589-45DE-B9FF-0D564C268352",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "SwiftEnvironment",
+          "name" : "SwiftEnvironment"
+        }
+      ]
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwiftEnvironmentTests",
+        "name" : "SwiftEnvironmentTests"
+      }
+    }
+  ],
+  "version" : 1
+}
