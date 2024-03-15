@@ -12,10 +12,12 @@ on:
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
+    - name: Pick xcode 15.1
+      run: sudo xcode-select -s '/Applications/Xcode_15.1.app/Contents/Developer'
     - name: Build
       run: swift build -v
     - name: Run tests
