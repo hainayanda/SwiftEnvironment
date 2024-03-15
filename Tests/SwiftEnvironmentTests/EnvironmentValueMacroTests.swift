@@ -10,71 +10,102 @@ import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
 
 final class EnvironmentValueMacroTests: XCTestCase {
+    
     func test_givenOneArgument_whenExpanded_shouldAddProperty() {
-        assertMacroExpansion("""
-            @EnvironmentValue("dummy")
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-            }
-            """, expandedSource: """
-            
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-            
-                var dummy: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKey.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKey.self] = newValue
-                    }
-                }
-            }
-            """, macros: ["EnvironmentValue": EnvironmentValueMacro.self])
+        assertMacroExpansion(
+            oneArg, expandedSource: oneArgExpansion,
+            macros: ["EnvironmentValue": EnvironmentValueMacro.self]
+        )
     }
     
     func test_givenOneArgumentWithTypeAliases_whenExpanded_shouldAddProperty() {
-        assertMacroExpansion("""
-            @EnvironmentValue("dummy")
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    typealias Value = DummyDependency
-                    static let defaultValue: Value = DummyDependency()
-                }
-            }
-            """, expandedSource: """
-            
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    typealias Value = DummyDependency
-                    static let defaultValue: Value = DummyDependency()
-                }
-            
-                var dummy: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKey.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKey.self] = newValue
-                    }
-                }
-            }
-            """, macros: ["EnvironmentValue": EnvironmentValueMacro.self])
+        assertMacroExpansion(
+            oneArgTypeAlias, expandedSource: oneArgTypeAliasExpansion,
+            macros: ["EnvironmentValue": EnvironmentValueMacro.self]
+        )
     }
     
     func test_givenOneArgumentWithNoTypeAnnotation_whenExpanded_shouldAddProperty() {
-        assertMacroExpansion("""
+        assertMacroExpansion(
+            oneArgNoType, expandedSource: oneArgNoTypeExpansion,
+            macros: ["EnvironmentValue": EnvironmentValueMacro.self]
+        )
+    }
+    
+    func test_givenMultipleArguments_whenExpanded_shouldAddProperties() {
+        assertMacroExpansion(
+            multiArgs, expandedSource: multiArgsExpansion,
+            macros: ["EnvironmentValue": EnvironmentValueMacro.self]
+        )
+    }
+}
+
+private let oneArg: String = """
+        @EnvironmentValue("dummy")
+        extension EnvironmentValues {
+            struct DummyEnvironmentKey: EnvironmentKey {
+                static let defaultValue: DummyDependency = DummyDependency()
+            }
+        }
+        """
+
+private let oneArgExpansion: String = """
+        
+        extension EnvironmentValues {
+            struct DummyEnvironmentKey: EnvironmentKey {
+                static let defaultValue: DummyDependency = DummyDependency()
+            }
+        
+            var dummy: DummyDependency {
+                get {
+                    self [DummyEnvironmentKey.self]
+                }
+                set {
+                    self [DummyEnvironmentKey.self] = newValue
+                }
+            }
+        }
+        """
+
+private let oneArgTypeAlias: String = """
+            @EnvironmentValue("dummy")
+            extension EnvironmentValues {
+                struct DummyEnvironmentKey: EnvironmentKey {
+                    typealias Value = DummyDependency
+                    static let defaultValue: Value = DummyDependency()
+                }
+            }
+            """
+
+private let oneArgTypeAliasExpansion: String = """
+            
+            extension EnvironmentValues {
+                struct DummyEnvironmentKey: EnvironmentKey {
+                    typealias Value = DummyDependency
+                    static let defaultValue: Value = DummyDependency()
+                }
+            
+                var dummy: DummyDependency {
+                    get {
+                        self [DummyEnvironmentKey.self]
+                    }
+                    set {
+                        self [DummyEnvironmentKey.self] = newValue
+                    }
+                }
+            }
+            """
+
+private let oneArgNoType: String = """
             @EnvironmentValue("dummy")
             extension EnvironmentValues {
                 struct DummyEnvironmentKey: EnvironmentKey {
                     static let defaultValue = DummyDependency()
                 }
             }
-            """, expandedSource: """
+            """
+
+private let oneArgNoTypeExpansion: String = """
             
             extension EnvironmentValues {
                 struct DummyEnvironmentKey: EnvironmentKey {
@@ -90,11 +121,9 @@ final class EnvironmentValueMacroTests: XCTestCase {
                     }
                 }
             }
-            """, macros: ["EnvironmentValue": EnvironmentValueMacro.self])
-    }
-    
-    func test_givenMultipleArguments_whenExpanded_shouldAddProperties() {
-        assertMacroExpansion("""
+            """
+
+private let multiArgs: String = """
             @EnvironmentValue("one", "two", "three")
             extension EnvironmentValues {
                 struct DummyEnvironmentKeyOne: EnvironmentKey {
@@ -107,7 +136,9 @@ final class EnvironmentValueMacroTests: XCTestCase {
                     static let defaultValue: DummyDependency = DummyDependency()
                 }
             }
-            """, expandedSource: """
+            """
+
+private let multiArgsExpansion: String = """
             
             extension EnvironmentValues {
                 struct DummyEnvironmentKeyOne: EnvironmentKey {
@@ -147,6 +178,4 @@ final class EnvironmentValueMacroTests: XCTestCase {
                     }
                 }
             }
-            """, macros: ["EnvironmentValue": EnvironmentValueMacro.self])
-    }
-}
+            """

@@ -106,7 +106,7 @@ private extension StructDeclSyntax {
                 .first { $0.isStatic && $0.name == "defaultValue" }
             
             guard let defaultValue else {
-                throw EnvironmentValueMacroError.cannotDetermineEnvironmentValueType
+                throw EnvironmentValueMacroError.undeterminedEnvironmentValueType
             }
             if let typeAnnotation = defaultValue.typeAnnotation,
                typeAnnotation != "Value" {
@@ -119,7 +119,7 @@ private extension StructDeclSyntax {
                initializer != "Value" {
                 return initializer
             }
-            throw EnvironmentValueMacroError.cannotDetermineEnvironmentValueType
+            throw EnvironmentValueMacroError.undeterminedEnvironmentValueType
         }
     }
 }

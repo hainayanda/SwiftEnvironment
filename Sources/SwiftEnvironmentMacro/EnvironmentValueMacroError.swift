@@ -15,8 +15,8 @@ public enum EnvironmentValueMacroError: CustomStringConvertible, Error {
     case noEnvironmentKeyProvided
     case duplicatedKeyPaths
     case duplicatedEnvironmentKeys
-    case cannotDetermineEnvironmentValueType
-    case differentNumberOfKeyPathsAndEnvironmentKey
+    case undeterminedEnvironmentValueType
+    case missingEnvironmentKeyValuePair
     
     public var description: String {
         switch self {
@@ -32,11 +32,11 @@ public enum EnvironmentValueMacroError: CustomStringConvertible, Error {
             return "@EnvironmentValue failed to extract EnvironmentKey"
         case .duplicatedKeyPaths:
             return "@EnvironmentValue provided KeyPaths is duplicated"
-        case .cannotDetermineEnvironmentValueType:
+        case .undeterminedEnvironmentValueType:
             return "@EnvironmentValue cannot determine EnvironmentValue type"
         case .duplicatedEnvironmentKeys:
             return "@EnvironmentValue provided EnvironmentKeys is duplicated"
-        case .differentNumberOfKeyPathsAndEnvironmentKey:
+        case .missingEnvironmentKeyValuePair:
             return "@EnvironmentValue provided KeyPaths number is not the same as provided EnvironmentKeys"
         }
     }

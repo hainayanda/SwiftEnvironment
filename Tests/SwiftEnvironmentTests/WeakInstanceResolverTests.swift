@@ -38,7 +38,7 @@ final class WeakInstanceResolverTests: XCTestCase {
     
     func test_givenQueue_whenResolve_shouldDoItInGivenQueue() async {
         var isMainThread: Bool?
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) -> Void in
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             let resolver = WeakInstanceResolver(queue: .global()) {
                 defer {
                     continuation.resume()
@@ -46,7 +46,7 @@ final class WeakInstanceResolverTests: XCTestCase {
                 isMainThread = Thread.isMainThread
                 return DummyDependency()
             }
-            let _ = resolver.resolve(for: DummyDependency.self)
+            _ = resolver.resolve(for: DummyDependency.self)
         }
         XCTAssertNotNil(isMainThread)
         XCTAssertFalse(isMainThread!)
