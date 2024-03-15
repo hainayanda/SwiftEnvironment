@@ -14,21 +14,6 @@ protocol InstanceResolver {
     func resolve<V>(for type: V.Type) -> V?
 }
 
-// MARK: StaticInstanceResolver
-
-struct StaticInstanceResolver<Value>: InstanceResolver {
-    
-    let value: Value
-    
-    @inlinable init(value: Value) {
-        self.value = value
-    }
-    
-    @inlinable func resolve<V>(for type: V.Type) -> V? {
-        value as? V
-    }
-}
-
 // MARK: SingletonInstanceResolver
 
 final class SingletonInstanceResolver<Value>: InstanceResolver {

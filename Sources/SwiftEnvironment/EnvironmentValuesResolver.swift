@@ -26,14 +26,6 @@ public class EnvironmentValuesResolver {
     @discardableResult
     public func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
-        _ value: V) -> EnvironmentValuesResolver {
-            resolvers[keyPath] = StaticInstanceResolver(value: value)
-            return self
-        }
-    
-    @discardableResult
-    public func singleton<V>(
-        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
         _ value: @escaping () -> V) -> EnvironmentValuesResolver {
             resolvers[keyPath] = SingletonInstanceResolver(queue: queue, resolver: value)

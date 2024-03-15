@@ -31,16 +31,6 @@ final class IntegrationTests: XCTestCase {
         XCTAssertTrue(dummy1 === dummy2)
     }
     
-    func test_givenSingletonInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.singleton(\.dummy, DummyDependency())
-        
-        @GlobalEnvironment(\.dummy) var dummy1
-        @GlobalEnvironment(\.dummy) var dummy2
-        
-        XCTAssertFalse(dummy1 === DummyEnvironmentKey.defaultValue)
-        XCTAssertTrue(dummy1 === dummy2)
-    }
-    
     func test_givenTransientInjection_whenGet_shouldAlwaysReturnNewValue() {
         GlobalResolver.transient(\.dummy, DummyDependency())
         
@@ -59,16 +49,6 @@ final class IntegrationTests: XCTestCase {
         
         XCTAssertFalse(dummy1 === DummyEnvironmentKey.defaultValue)
         XCTAssertTrue(dummy1 === dummy2)
-    }
-    
-    func test_givenNewValue_whenGet_shouldAlwaysSetValue() {
-        let newDummy = DummyDependency()
-        @GlobalEnvironment(\.dummy) var dummy
-        
-        dummy = newDummy
-        
-        XCTAssertFalse(dummy === DummyEnvironmentKey.defaultValue)
-        XCTAssertTrue(dummy === newDummy)
     }
     
 }

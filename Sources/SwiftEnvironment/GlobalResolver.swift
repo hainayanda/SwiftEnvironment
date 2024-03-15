@@ -9,28 +9,21 @@ import Foundation
 
 public struct GlobalResolver {
     
+    @inlinable
     @discardableResult
     public static func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
-        _ value: V) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.environment(keyPath, value)
-        }
-    
-    @inlinable
-    @discardableResult
-    public static func singleton<V>(
-        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
         _ value: @escaping @autoclosure () -> V) -> EnvironmentValuesResolver {
-            singleton(keyPath, resolveOn: queue, resolver: value)
+            environment(keyPath, resolveOn: queue, resolver: value)
         }
     
     @discardableResult
-    public static func singleton<V>(
+    public static func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> V) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.singleton(keyPath, resolveOn: queue, resolver)
+            EnvironmentValuesResolver.global.environment(keyPath, resolveOn: queue, resolver)
         }
     
     @inlinable
