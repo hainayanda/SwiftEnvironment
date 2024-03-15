@@ -19,7 +19,7 @@ public class EnvironmentValuesResolver {
         self.resolvers = resolvers
     }
     
-    func resolve<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>) -> V {
+    func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V {
         resolvers[keyPath]?.resolve(for: V.self) ?? environmentValues[keyPath: keyPath]
     }
     
