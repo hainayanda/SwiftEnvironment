@@ -2,6 +2,7 @@
 
 SwiftEnvironment is a Swift library designed to simplify environment value management in SwiftUI applications. It provides convenient macros and utilities to streamline the process of defining and injecting environment values.
 
+![GitHub Release](https://img.shields.io/github/v/release/hainayanda/swiftenvironment)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9dbed03fc0cd49f8a8fdd97a33edf29b)](https://app.codacy.com/gh/hainayanda/SwiftEnvironment/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![SwiftPM Compatible](https://img.shields.io/badge/SwiftPM-Compatible-brightgreen)](https://swift.org/package-manager/)
 [![Unit Test](https://github.com/hainayanda/SwiftEnvironment/actions/workflows/test.yml/badge.svg)](https://github.com/hainayanda/SwiftEnvironment/actions/workflows/test.yml)
