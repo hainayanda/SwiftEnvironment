@@ -33,7 +33,8 @@ let baseDefaultValues: [String: String] = [
     "CGFloat": "0", "CGSize": ".zero", "CGPoint": ".zero", "CGRect": ".zero",
     "NSNumber": "0", "NSString": "\"\"", "NSNull": "NSNull()", "NSObject": "NSObject()",
     "NSData": "NSData()", "NSDate": "NSDate()", "NSSet": "NSSet()", "NSArray": "NSArray()",
-    "NSSize": ".zero", "NSPoint": ".zero", "NSRect": ".zero"
+    "NSSize": ".zero", "NSPoint": ".zero", "NSRect": ".zero",
+    "AnyView": "AnyView(EmptyView())"
 ]
 
 private extension String {
