@@ -18,7 +18,7 @@ public macro Stubbed(name: String? = nil, type: StubType = .struct) = #externalM
 )
 
 @attached(peer, names: suffixed(Stub))
-public macro Stubbed(name: String? = nil, type: StubType = .struct, values: DefaultType...) = #externalMacro(
+public macro Stubbed(name: String? = nil, type: StubType = .struct, _ values: DefaultType...) = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
 )
 
