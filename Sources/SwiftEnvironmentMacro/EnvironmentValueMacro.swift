@@ -68,15 +68,13 @@ private extension VariableDeclSyntax {
     var typeAnnotation: String? {
         bindings.first?.typeAnnotation?
             .as(TypeAnnotationSyntax.self)?
-            .type.as(IdentifierTypeSyntax.self)?
-            .trimmedDescription
+            .type.trimmedDescription
     }
     
     var initializer: String? {
         bindings.first?.initializer?.value
             .as(FunctionCallExprSyntax.self)?
             .calledExpression
-            .as(DeclReferenceExprSyntax.self)?
             .trimmedDescription
     }
 }

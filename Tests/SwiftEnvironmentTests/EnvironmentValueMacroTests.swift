@@ -58,7 +58,7 @@ private let oneImplicitArg: String = """
         @EnvironmentValue("dummy")
         extension EnvironmentValues {
             struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue = DummyDependency()
+                static let defaultValue = Some.Dependency()
             }
         }
         """
@@ -67,10 +67,10 @@ private let oneImplicitArgExpansion: String = """
         
         extension EnvironmentValues {
             struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue = DummyDependency()
+                static let defaultValue = Some.Dependency()
             }
         
-            var dummy: DummyDependency {
+            var dummy: Some.Dependency {
                 get {
                     self [DummyEnvironmentKey.self]
                 }
