@@ -9,7 +9,7 @@ import XCTest
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
 
-//swiftlint:disable file_length
+// swiftlint:disable file_length
 final class StubGeneratorMacroTests: XCTestCase {
     
     func test_givenSimpleProtocol_shouldGenerateDefault() {
