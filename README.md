@@ -76,6 +76,44 @@ SomeView()
     .environment(\.myValue, SomeDependency())
 ```
 
+### Stubbed macro
+
+The `Stubbed` macro simplifies the creation of stubs from protocols, reducing boilerplate code. To use the `Stubbed` macro, simply add `@Stubbed` to the protocol you wish to create a stub for:
+
+```swift
+import SwiftEnvironment
+
+@Stubbed
+protocol MyProtocol { 
+    var someValue: Int { get }
+    func calculate(someValue: Int) -> Int
+}
+```
+
+This will generate a structure similar to this:
+
+```swift
+struct MyProtocolStub { 
+    let someValue: Int = 0
+    init() { }
+    func calculate(someValue: Int) -> Int { return 0 }
+}
+```
+
+If the return type of the protocol's methods or variables is unknown or you want to customize the value, you can provide the default value using `.value(for: <custom type>.self, <custom default value>)`:
+
+```swift
+import SwiftEnvironment
+
+@Stubbed(.value(for: MyType.self, MyType()))
+protocol MyProtocol { 
+    var someValue: MyType { get }
+    func calculate(someValue: Int) -> MyType
+}
+```
+
+You can provide multiple types as variadic parameters.
+
 ### GlobalEnvironment
 
 `GlobalEnvironment` complements SwiftUI Environment. It allows `EnvironmentValues` to be accessed globally outside of SwiftUI injection scope. To use it, add EnvironmentValues just like how we add it for SwiftUI, and inject it into `GlobalResolver`:
