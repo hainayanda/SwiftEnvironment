@@ -9,7 +9,6 @@ import Foundation
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntax
-import Foundation
 
 public struct StubGeneratorMacro: PeerMacro {
     public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
@@ -133,12 +132,13 @@ private extension VariableDeclSyntax {
               let name = pattern.pattern.as(IdentifierPatternSyntax.self)?.trimmedDescription,
               let type = pattern.typeAnnotation?.type.trimmedDescription,
               let accessors = pattern.accessorBlock?.accessors.as(AccessorDeclListSyntax.self),
-              accessors.contains (where: { $0.accessorSpecifier.text == "get" }) else {
+              accessors.contains(where: { $0.accessorSpecifier.text == "get" }) else {
             throw StubGeneratorMacroError.failedToExtractVariables
         }
         let mutable = accessors.contains { $0.accessorSpecifier.text == "set" }
         return try VariableProtocolDeclaration(
-            name: name, declaration: mutable ? .var: .let,typeAnnotiation: type,
+            name: name, declaration: mutable ? .var: .let, 
+            typeAnnotiation: type,
             defaultValue: defaultValues.defaultValue(for: type)
         )
     }
