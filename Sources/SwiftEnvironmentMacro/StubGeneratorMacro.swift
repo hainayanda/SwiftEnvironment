@@ -156,14 +156,10 @@ private extension FunctionDeclSyntax {
 }
 
 private extension ProtocolDeclSyntax {
-    var isPublic: Bool {
-        modifiers.contains { $0.name.text == "public" }
-    }
-    
     func defaultInstance(_ instanceType: StubDeclaration.InstanceType, givenName: String?, with defaultValues: DefaultValueGenerator) throws -> StubDeclaration {
         try StubDeclaration(
-            isPublic: isPublic, instanceType: instanceType,
-            name: "\(givenName ?? name.text)Stub", variables: variables(with: defaultValues),
+            instanceType: instanceType, name: "\(givenName ?? name.text)Stub",
+            variables: variables(with: defaultValues),
             methods: methods(with: defaultValues)
         )
     }

@@ -8,21 +8,19 @@
 import Foundation
 
 struct StubDeclaration: CustomStringConvertible {
-    let isPublic: Bool
     let instanceType: InstanceType
     let name: String
     let variables: [VariableProtocolDeclaration]
     let methods: [MethodProtocolDeclaration]
     
     var description: String {
-        let modifier = "\(isPublic ? "public ": "")"
-        let declaration = "\(modifier)\(instanceType.declarationString(for: name)) {\n"
+        let declaration = "\(instanceType.declarationString(for: name)) {\n"
         let withVariables = variables.reduce(declaration) { partialResult, variable in
-            "\(partialResult)    \(modifier)\(variable.description)\n"
+            "\(partialResult)    \(variable.description)\n"
         }
-        let withInit = "\(withVariables)    \(modifier)init() { }\n"
+        let withInit = "\(withVariables)    init() { }\n"
         let withMethods = methods.reduce(withInit) { partialResult, method in
-            "\(partialResult)    \(modifier)\(method.description)\n"
+            "\(partialResult)    \(method.description)\n"
         }
         return "\(withMethods)}"
     }
