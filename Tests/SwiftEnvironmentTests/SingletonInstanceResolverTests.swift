@@ -12,7 +12,7 @@ import XCTest
 final class SingletonInstanceResolverTests: XCTestCase {
     
     func test_givenResolver_whenResolve_shouldReturnSameInstance() {
-        let resolver = SingletonInstanceResolver(queue: nil) { DummyDependency() }
+        let resolver = SingletonInstanceResolver(queue: nil) { DummyDependencyStub() }
         let resolved1 = resolver.resolve(for: DummyDependency.self)
         let resolved2 = resolver.resolve(for: DummyDependency.self)
         XCTAssertNotNil(resolved1)
@@ -21,7 +21,7 @@ final class SingletonInstanceResolverTests: XCTestCase {
     }
     
     func test_givenValue_whenResolveWrongType_shouldReturnNil() {
-        let resolver = SingletonInstanceResolver(queue: nil) { DummyDependency() }
+        let resolver = SingletonInstanceResolver(queue: nil) { DummyDependencyStub() }
         let resolved = resolver.resolve(for: String.self)
         XCTAssertNil(resolved)
     }
@@ -34,7 +34,7 @@ final class SingletonInstanceResolverTests: XCTestCase {
                     continuation.resume()
                 }
                 isMainThread = Thread.isMainThread
-                return DummyDependency()
+                return DummyDependencyStub()
             }
             _ = resolver.resolve(for: DummyDependency.self)
         }

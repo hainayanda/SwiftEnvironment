@@ -22,7 +22,7 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenBasicEnvironmentInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.environment(\.dummy, DummyDependency())
+        GlobalResolver.environment(\.dummy, DummyDependencyStub())
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.dummy) var dummy2
@@ -32,7 +32,7 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenTransientInjection_whenGet_shouldAlwaysReturnNewValue() {
-        GlobalResolver.transient(\.dummy, DummyDependency())
+        GlobalResolver.transient(\.dummy, DummyDependencyStub())
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.dummy) var dummy2
@@ -42,7 +42,7 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenWeakInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.weak(\.dummy, DummyDependency())
+        GlobalResolver.weak(\.dummy, DummyDependencyStub())
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.dummy) var dummy2
@@ -58,6 +58,6 @@ typealias DummyEnvironmentKey = EnvironmentValues.DummyEnvironmentKey
 @EnvironmentValue("dummy")
 extension EnvironmentValues {
     struct DummyEnvironmentKey: EnvironmentKey {
-        static let defaultValue = DummyDependency()
+        static let defaultValue = DummyDependencyStub()
     }
 }

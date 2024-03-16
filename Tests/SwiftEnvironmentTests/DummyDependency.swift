@@ -7,7 +7,9 @@
 //
 
 import Foundation
+import SwiftEnvironment
 
-final class DummyDependency {
-    let id: UUID = UUID()
+@Stubbed
+protocol DummyDependency: AnyObject {
+    var id: UUID { get }
 }
