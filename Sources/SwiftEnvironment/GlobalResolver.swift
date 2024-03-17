@@ -16,6 +16,23 @@ public struct GlobalResolver {
             EnvironmentValuesResolver.global.environment(keyPath, use: soureKeyPath)
         }
     
+    @discardableResult
+    public static func environment<S, V1, V2>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, use: soureKeyPath)
+        }
+    
+    @discardableResult
+    public static func environment<S, V1, V2, V3>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        _ keyPath3: WritableKeyPath<EnvironmentValues, V3>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, keyPath3, use: soureKeyPath)
+        }
+    
     @inlinable
     @discardableResult
     public static func environment<V>(

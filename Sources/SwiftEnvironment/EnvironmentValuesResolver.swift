@@ -60,3 +60,28 @@ public class EnvironmentValuesResolver {
             return self
         }
 }
+
+extension EnvironmentValuesResolver {
+    
+    @inlinable
+    @discardableResult
+    public func environment<S, V1, V2>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            environment(keyPath1, use: soureKeyPath)
+                .environment(keyPath2, use: soureKeyPath)
+        }
+    
+    @inlinable
+    @discardableResult
+    public func environment<S, V1, V2, V3>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        _ keyPath3: WritableKeyPath<EnvironmentValues, V3>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            environment(keyPath1, use: soureKeyPath)
+                .environment(keyPath2, use: soureKeyPath)
+                .environment(keyPath3, use: soureKeyPath)
+        }
+}
