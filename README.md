@@ -48,6 +48,37 @@ Then, include it in your target:
 
 ## Usage
 
+This library is designed to allow easier dependency management, using exisiting EnvironmentValues from SwiftUI. Adding new environment is very easy:
+
+```swift
+// protocol with stub
+@Stubbed
+protocol MyProtocol {
+    func doSomething()
+}
+
+// add to EnvironmentValues
+@EnvironmentValue("myValue")
+extension EnvironmentValues {
+    struct MyProtocolKey: EnvironmentKey {
+        static let defaultValue = MyProtocolStub()
+    }
+}
+```
+
+Then you can use the keyPath in SwiftUI Environment or GlobalEnvironment:
+
+```swift
+@Environment(\.myValue) var switUIValue
+@GlobalEnvironment(\.myValue) var globalValue
+```
+
+Different than SwiftUI Environment, GlobalEnvironment can be injected and accessed globally:
+
+```swift
+GlobalResolver.environment(\.myValue, MyImplementation())
+```
+
 ### EnvironmentValue macro
 
 The `EnvironmentValue` macro is used to remove boilerplate code when adding a new variable to EnvironmentValue. To use it, simply add `@EnvironmentValue("<name of the value KeyPath>")` to the extension of `EnvironmentValues` with the structure of your `EnvironmentKey`.
