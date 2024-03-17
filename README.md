@@ -129,6 +129,13 @@ Then, you can access it globally using `GlobalEnvironment` property wrapper:
 @GlobalEnvironment(\.myValue) var myValue
 ```
 
+You can connect multiple KeyPaths to one KeyPaths by a single call:
+
+```swift
+GlobalResolver
+    .environment(\.this, \.that, use: \.myValue)
+```
+
 ### GlobalResolver environment
 
 Injected values to `GlobalResolver.environment` are injected using `autoclosure`, so the value will be created lazily. This value will be stored as long as the app is alive. You can inject an explicit closure too if needed:
@@ -157,6 +164,11 @@ Another injection method for GlobalResolver is `weak`. This method ensures that 
 GlobalResolver
     .weak(\.myValue, SomeDependency())
 ```
+
+### Enabling Macro on error
+
+XCode will try prevent usage of macros downloaded from the internet. To enable it, tap on the error and choose Trust & Enable.
+[SwiftEnvironment error](SwiftEnvironmentError.png)
 
 ## Contributing
 

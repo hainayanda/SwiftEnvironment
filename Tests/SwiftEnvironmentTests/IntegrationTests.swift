@@ -51,13 +51,74 @@ final class IntegrationTests: XCTestCase {
         XCTAssertTrue(dummy1 === dummy2)
     }
     
+    func test_givenConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
+        GlobalResolver.environment(\.dummy, DummyDependencyStub())
+        GlobalResolver.environment(\.secondDummy, use: \.dummy)
+        
+        @GlobalEnvironment(\.dummy) var dummy1
+        @GlobalEnvironment(\.secondDummy) var dummy2
+        
+        XCTAssertTrue(dummy1 === dummy2)
+    }
+    
+    func test_givenTwoConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
+        GlobalResolver.environment(\.dummy, DummyDependencyStub())
+        GlobalResolver.environment(\.secondDummy, \.thirdDummy, use: \.dummy)
+        
+        @GlobalEnvironment(\.dummy) var dummy1
+        @GlobalEnvironment(\.secondDummy) var dummy2
+        @GlobalEnvironment(\.thirdDummy) var dummy3
+        
+        XCTAssertTrue(dummy1 === dummy2)
+        XCTAssertTrue(dummy1 === dummy3)
+    }
+    
+    func test_givenThreeConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
+        GlobalResolver.environment(\.dummy, DummyDependencyStub())
+        GlobalResolver.environment(\.secondDummy, \.thirdDummy, \.fourthDummy, use: \.dummy)
+        
+        @GlobalEnvironment(\.dummy) var dummy1
+        @GlobalEnvironment(\.secondDummy) var dummy2
+        @GlobalEnvironment(\.thirdDummy) var dummy3
+        @GlobalEnvironment(\.fourthDummy) var dummy4
+        
+        XCTAssertTrue(dummy1 === dummy2)
+        XCTAssertTrue(dummy2 === dummy3)
+        XCTAssertTrue(dummy3 === dummy4)
+    }
+    
+    func test_givenConnectedInjection_whenGet_shouldReturnDefault() {
+        GlobalResolver.environment(\.dummy, DummyDependencyStub())
+        GlobalResolver.environment(\.fifthDummy, use: \.dummy)
+        
+        @GlobalEnvironment(\.fifthDummy) var dummy
+        
+        XCTAssertEqual(dummy, "dummy")
+    }
+    
 }
 
 typealias DummyEnvironmentKey = EnvironmentValues.DummyEnvironmentKey
 
-@EnvironmentValue("dummy")
+@EnvironmentValue("dummy", "secondDummy", "thirdDummy", "fourthDummy", "fifthDummy")
 extension EnvironmentValues {
     struct DummyEnvironmentKey: EnvironmentKey {
         static let defaultValue = DummyDependencyStub()
+    }
+    
+    struct SecondDummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = DummyDependencyStub()
+    }
+    
+    struct ThirdDummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = DummyDependencyStub()
+    }
+    
+    struct FourthDummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = DummyDependencyStub()
+    }
+    
+    struct FiftDummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue: String = "dummy"
     }
 }

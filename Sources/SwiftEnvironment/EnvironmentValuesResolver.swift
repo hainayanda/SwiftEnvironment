@@ -24,6 +24,16 @@ public class EnvironmentValuesResolver {
     }
     
     @discardableResult
+    public func environment<S, V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            resolvers[keyPath] = TransientInstanceResolver<V>(queue: nil) { [unowned self] in
+                (self.resolve(soureKeyPath) as? V) ?? self.environmentValues[keyPath: keyPath]
+            }
+            return self
+        }
+    
+    @discardableResult
     public func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
@@ -48,5 +58,30 @@ public class EnvironmentValuesResolver {
         _ value: @escaping () -> V) -> EnvironmentValuesResolver {
             resolvers[keyPath] = WeakInstanceResolver(queue: queue, resolver: value)
             return self
+        }
+}
+
+extension EnvironmentValuesResolver {
+    
+    @inlinable
+    @discardableResult
+    public func environment<S, V1, V2>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            environment(keyPath1, use: soureKeyPath)
+                .environment(keyPath2, use: soureKeyPath)
+        }
+    
+    @inlinable
+    @discardableResult
+    public func environment<S, V1, V2, V3>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        _ keyPath3: WritableKeyPath<EnvironmentValues, V3>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            environment(keyPath1, use: soureKeyPath)
+                .environment(keyPath2, use: soureKeyPath)
+                .environment(keyPath3, use: soureKeyPath)
         }
 }
