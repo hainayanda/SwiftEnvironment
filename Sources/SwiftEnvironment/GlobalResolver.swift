@@ -47,7 +47,7 @@ public struct GlobalResolver {
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> V) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.environment(keyPath, resolveOn: queue, resolver)
+            EnvironmentValuesResolver.global.environment(keyPath, resolveOn: queue, resolver: resolver)
         }
     
     @inlinable
@@ -64,7 +64,7 @@ public struct GlobalResolver {
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> V) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.transient(keyPath, resolveOn: queue, resolver)
+            EnvironmentValuesResolver.global.transient(keyPath, resolveOn: queue, resolver: resolver)
         }
     
     @inlinable
@@ -81,6 +81,6 @@ public struct GlobalResolver {
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> V) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.weak(keyPath, resolveOn: queue, resolver)
+            EnvironmentValuesResolver.global.weak(keyPath, resolveOn: queue, resolver: resolver)
         }
 }

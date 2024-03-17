@@ -1,6 +1,6 @@
 //
 //  EnvironmentValuesResolver.swift
-//  
+//
 //
 //  Created by Nayanda Haberty on 14/3/24.
 //
@@ -37,8 +37,17 @@ public class EnvironmentValuesResolver {
     public func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
-        _ value: @escaping () -> V) -> EnvironmentValuesResolver {
+        _ value: @autoclosure @escaping () -> V) -> EnvironmentValuesResolver {
             resolvers[keyPath] = SingletonInstanceResolver(queue: queue, resolver: value)
+            return self
+        }
+    
+    @discardableResult
+    public func environment<V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        resolveOn queue: DispatchQueue? = nil,
+        resolver: @escaping () -> V) -> EnvironmentValuesResolver {
+            resolvers[keyPath] = SingletonInstanceResolver(queue: queue, resolver: resolver)
             return self
         }
     
@@ -46,8 +55,17 @@ public class EnvironmentValuesResolver {
     public func transient<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
-        _ value: @escaping () -> V) -> EnvironmentValuesResolver {
+        _ value: @autoclosure @escaping () -> V) -> EnvironmentValuesResolver {
             resolvers[keyPath] = TransientInstanceResolver(queue: queue, resolver: value)
+            return self
+        }
+    
+    @discardableResult
+    public func transient<V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        resolveOn queue: DispatchQueue? = nil,
+        resolver: @escaping () -> V) -> EnvironmentValuesResolver {
+            resolvers[keyPath] = TransientInstanceResolver(queue: queue, resolver: resolver)
             return self
         }
     
@@ -55,8 +73,17 @@ public class EnvironmentValuesResolver {
     public func weak<V: AnyObject>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,
-        _ value: @escaping () -> V) -> EnvironmentValuesResolver {
+        _ value: @autoclosure @escaping () -> V) -> EnvironmentValuesResolver {
             resolvers[keyPath] = WeakInstanceResolver(queue: queue, resolver: value)
+            return self
+        }
+    
+    @discardableResult
+    public func weak<V: AnyObject>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        resolveOn queue: DispatchQueue? = nil,
+        resolver: @escaping () -> V) -> EnvironmentValuesResolver {
+            resolvers[keyPath] = WeakInstanceResolver(queue: queue, resolver: resolver)
             return self
         }
 }
