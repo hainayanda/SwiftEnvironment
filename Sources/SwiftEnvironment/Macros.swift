@@ -25,7 +25,9 @@ public macro Stubbed(name: String? = nil, type: StubType = .struct, _ values: De
 public enum StubType {
     case `struct`
     case `class`
+    case openClass
     case subclass(AnyClass.Type)
+    case openSubclass(AnyClass.Type)
 }
 
 public struct DefaultType {

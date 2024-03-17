@@ -108,21 +108,25 @@ private extension AttributeSyntax {
                 }
                 return .struct(protocol: protocolName)
             } else if argument.trimmedDescription.match(#"^(StubType)?\.`?class`?$"#) {
-                return .class(protocol: protocolName, superClass: nil)
+                return .class(protocol: protocolName, superClass: nil, final: true)
+            } else if argument.trimmedDescription.match(#"^(StubType)?\.openClass$"#) {
+                return .class(protocol: protocolName, superClass: nil, final: false)
             } else {
                 throw StubGeneratorMacroError.cannotDetermineDefaultValue(argument.trimmedDescription)
             }
         }
     
     func argsTypeArgument(for protocolName: String, argument: FunctionCallExprSyntax) throws -> StubDeclaration.InstanceType {
-        guard argument.calledExpression.trimmedDescription.match(#"^(StubType)?\.`?subclass`?$"#),
+        let isSubclass: Bool = argument.calledExpression.trimmedDescription.match(#"^(StubType)?\.subclass$"#)
+        let isOpenSubclass: Bool = argument.calledExpression.trimmedDescription.match(#"^(StubType)?\.openSubclass$"#)
+        guard isSubclass || isOpenSubclass,
               let argumentExpression = argument.arguments.first?.expression,
               argumentExpression.trimmedDescription.match(#"^\S+\.self$"#),
               let memberAccess = argumentExpression.as(MemberAccessExprSyntax.self),
               let superClass = memberAccess.base?.trimmedDescription else {
             throw StubGeneratorMacroError.cannotDetermineDefaultValue(argument.trimmedDescription)
         }
-        return .class(protocol: protocolName, superClass: superClass)
+        return .class(protocol: protocolName, superClass: superClass, final: isSubclass)
     }
 }
 
