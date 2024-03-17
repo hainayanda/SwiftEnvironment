@@ -24,6 +24,16 @@ public class EnvironmentValuesResolver {
     }
     
     @discardableResult
+    public func environment<S, V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            resolvers[keyPath] = TransientInstanceResolver<V>(queue: nil) { [unowned self] in
+                (self.resolve(soureKeyPath) as? V) ?? self.environmentValues[keyPath: keyPath]
+            }
+            return self
+        }
+    
+    @discardableResult
     public func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue? = nil,

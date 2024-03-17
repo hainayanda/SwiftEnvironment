@@ -9,6 +9,13 @@ import Foundation
 
 public struct GlobalResolver {
     
+    @discardableResult
+    public static func environment<S, V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            EnvironmentValuesResolver.global.environment(keyPath, use: soureKeyPath)
+        }
+    
     @inlinable
     @discardableResult
     public static func environment<V>(
