@@ -199,6 +199,7 @@ GlobalResolver
 ### Enabling Macro on error
 
 XCode will try prevent usage of macros downloaded from the internet. To enable it, tap on the error and choose Trust & Enable.
+
 ![SwiftEnvironment error](SwiftEnvironmentError.png)
 
 ## Contributing
