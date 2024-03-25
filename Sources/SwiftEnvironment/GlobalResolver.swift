@@ -9,29 +9,9 @@ import Foundation
 
 public struct GlobalResolver {
     
-    @discardableResult
-    public static func environment<S, V>(
-        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
-        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.environment(keyPath, use: soureKeyPath)
-        }
-    
-    @discardableResult
-    public static func environment<S, V1, V2>(
-        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
-        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
-        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, use: soureKeyPath)
-        }
-    
-    @discardableResult
-    public static func environment<S, V1, V2, V3>(
-        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
-        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
-        _ keyPath3: WritableKeyPath<EnvironmentValues, V3>,
-        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
-            EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, keyPath3, use: soureKeyPath)
-        }
+    public static func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V {
+        EnvironmentValuesResolver.global.resolve(keyPath)
+    }
     
     @inlinable
     @discardableResult
@@ -82,5 +62,29 @@ public struct GlobalResolver {
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> V) -> EnvironmentValuesResolver {
             EnvironmentValuesResolver.global.weak(keyPath, resolveOn: queue, resolver: resolver)
+        }
+    
+    @discardableResult
+    public static func environment<S, V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            EnvironmentValuesResolver.global.environment(keyPath, use: soureKeyPath)
+        }
+    
+    @discardableResult
+    public static func environment<S, V1, V2>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, use: soureKeyPath)
+        }
+    
+    @discardableResult
+    public static func environment<S, V1, V2, V3>(
+        _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
+        _ keyPath2: WritableKeyPath<EnvironmentValues, V2>,
+        _ keyPath3: WritableKeyPath<EnvironmentValues, V3>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, keyPath3, use: soureKeyPath)
         }
 }
