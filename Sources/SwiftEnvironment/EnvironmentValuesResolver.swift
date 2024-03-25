@@ -19,19 +19,9 @@ public class EnvironmentValuesResolver {
         self.resolvers = resolvers
     }
     
-    func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V {
+    public func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V {
         resolvers[keyPath]?.resolve(for: V.self) ?? environmentValues[keyPath: keyPath]
     }
-    
-    @discardableResult
-    public func environment<S, V>(
-        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
-        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
-            resolvers[keyPath] = TransientInstanceResolver<V>(queue: nil) { [unowned self] in
-                (self.resolve(soureKeyPath) as? V) ?? self.environmentValues[keyPath: keyPath]
-            }
-            return self
-        }
     
     @discardableResult
     public func environment<V>(
@@ -84,6 +74,16 @@ public class EnvironmentValuesResolver {
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> V) -> EnvironmentValuesResolver {
             resolvers[keyPath] = WeakInstanceResolver(queue: queue, resolver: resolver)
+            return self
+        }
+    
+    @discardableResult
+    public func environment<S, V>(
+        _ keyPath: WritableKeyPath<EnvironmentValues, V>,
+        use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> EnvironmentValuesResolver {
+            resolvers[keyPath] = TransientInstanceResolver<V>(queue: nil) { [unowned self] in
+                (self.resolve(soureKeyPath) as? V) ?? self.environmentValues[keyPath: keyPath]
+            }
             return self
         }
 }

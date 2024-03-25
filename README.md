@@ -167,6 +167,13 @@ GlobalResolver
     .environment(\.this, \.that, use: \.myValue)
 ```
 
+To resolve dependency manually from GlobalResolver, do this:
+
+```swift
+let myValue = GlobalResolver.resolve(\.myValue)
+```
+
+
 ### GlobalResolver environment
 
 Injected values to `GlobalResolver.environment` are injected using `autoclosure`, so the value will be created lazily. This value will be stored as long as the app is alive. You can inject an explicit closure too if needed:
