@@ -10,14 +10,14 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntax
 
-public struct StubGeneratorMacro: PeerMacro {
+extension StubGeneratorMacro: PeerMacro {
     public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard let protocolSyntax = declaration.as(ProtocolDeclSyntax.self) else {
-            throw StubGeneratorMacroError.onlyAvailableForProtocol
+            return []
         }
         let isObjectProtocol: Bool = protocolSyntax.inheritanceClause?
             .inheritedTypes.contains { $0.trimmedDescription == "AnyObject" } ?? false
-        let defaultValues = try node.defaultValueArgument
+        let defaultValues = try node.defaultValueArguments
             .reduce(into: baseDefaultValues) { partialResult, pair in
                 partialResult[pair.key] = pair.value
             }
@@ -67,35 +67,6 @@ private extension AttributeSyntax {
         return isObjectProtocol ?
             .class(protocol: protocolName, superClass: nil):
             .struct(protocol: protocolName)
-    }
-    
-    var defaultValueArgument: [String: String] {
-        get throws {
-            let arguments = arguments?.as(LabeledExprListSyntax.self)?
-                .filter { $0.label == nil }
-                .compactMap { $0.as(LabeledExprSyntax.self) }
-            guard let arguments else { return [:] }
-            return try arguments
-                .map { arg in
-                    guard let expression = arg.expression.as(FunctionCallExprSyntax.self),
-                          expression.calledExpression.trimmedDescription.match(#"^(DefaultType)?\.`?value`?$"#) else {
-                        throw StubGeneratorMacroError.unknownArguments(arg.trimmedDescription)
-                    }
-                    return expression
-                }
-                .reduce(into: [:]) { partialResult, expression in
-                    let innerArgs = expression.arguments.map { $0 }
-                    guard innerArgs.count == 2,
-                            innerArgs[0].label?.trimmedDescription == "for",
-                          innerArgs[1].label == nil,
-                          let memberAccess = innerArgs[0].expression.as(MemberAccessExprSyntax.self),
-                          let type = memberAccess.base?.trimmedDescription else {
-                        throw StubGeneratorMacroError.unknownArguments(expression.trimmedDescription)
-                    }
-                    let defaultValue = innerArgs[1].trimmedDescription
-                    partialResult[type] = defaultValue
-                }
-        }
     }
     
     func simpleTypeArgument(
@@ -149,6 +120,7 @@ private extension VariableDeclSyntax {
 }
 
 private extension FunctionDeclSyntax {
+    
     func mapToMethodProtocolDeclaration(with defaultValues: DefaultValueGenerator) throws -> MethodProtocolDeclaration {
         let returnClause = signature.returnClause?.as(ReturnClauseSyntax.self)
         let returnType = returnClause?.type.trimmedDescription ?? "Void"
