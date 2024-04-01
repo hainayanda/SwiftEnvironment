@@ -55,195 +55,195 @@ final class EnvironmentValueMacroTests: XCTestCase {
 }
 
 private let oneImplicitArg: String = """
-        @EnvironmentValue("dummy")
-        extension EnvironmentValues {
-            struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue = Some.Dependency()
-            }
-        }
-        """
+@EnvironmentValue("dummy")
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = Some.Dependency()
+    }
+}
+"""
 
 private let oneImplicitArgExpansion: String = """
-        
-        extension EnvironmentValues {
-            struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue = Some.Dependency()
-            }
-        
-            var dummy: Some.Dependency {
-                get {
-                    self [DummyEnvironmentKey.self]
-                }
-                set {
-                    self [DummyEnvironmentKey.self] = newValue
-                }
-            }
+
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = Some.Dependency()
+    }
+
+    var dummy: Some.Dependency {
+        get {
+            self [DummyEnvironmentKey.self]
         }
-        """
+        set {
+            self [DummyEnvironmentKey.self] = newValue
+        }
+    }
+}
+"""
 
 private let oneGenericArg: String = """
-        @EnvironmentValue("dummy")
-        extension EnvironmentValues {
-            struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue: Dependency<Some> = DummyDependency()
-            }
-        }
-        """
+@EnvironmentValue("dummy")
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue: Dependency<Some> = DummyDependency()
+    }
+}
+"""
 
 private let oneGenericArgExpansion: String = """
-        
-        extension EnvironmentValues {
-            struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue: Dependency<Some> = DummyDependency()
-            }
-        
-            var dummy: Dependency<Some> {
-                get {
-                    self [DummyEnvironmentKey.self]
-                }
-                set {
-                    self [DummyEnvironmentKey.self] = newValue
-                }
-            }
+
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue: Dependency<Some> = DummyDependency()
+    }
+
+    var dummy: Dependency<Some> {
+        get {
+            self [DummyEnvironmentKey.self]
         }
-        """
+        set {
+            self [DummyEnvironmentKey.self] = newValue
+        }
+    }
+}
+"""
 
 private let oneArg: String = """
-        @EnvironmentValue("dummy")
-        extension EnvironmentValues {
-            struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue: DummyDependency = DummyDependency()
-            }
-        }
-        """
+@EnvironmentValue("dummy")
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+}
+"""
 
 private let oneArgExpansion: String = """
-        
-        extension EnvironmentValues {
-            struct DummyEnvironmentKey: EnvironmentKey {
-                static let defaultValue: DummyDependency = DummyDependency()
-            }
-        
-            var dummy: DummyDependency {
-                get {
-                    self [DummyEnvironmentKey.self]
-                }
-                set {
-                    self [DummyEnvironmentKey.self] = newValue
-                }
-            }
+
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+
+    var dummy: DummyDependency {
+        get {
+            self [DummyEnvironmentKey.self]
         }
-        """
+        set {
+            self [DummyEnvironmentKey.self] = newValue
+        }
+    }
+}
+"""
 
 private let oneArgTypeAlias: String = """
-            @EnvironmentValue("dummy")
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    typealias Value = DummyDependency
-                    static let defaultValue: Value = DummyDependency()
-                }
-            }
-            """
+@EnvironmentValue("dummy")
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        typealias Value = DummyDependency
+        static let defaultValue: Value = DummyDependency()
+    }
+}
+"""
 
 private let oneArgTypeAliasExpansion: String = """
-            
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    typealias Value = DummyDependency
-                    static let defaultValue: Value = DummyDependency()
-                }
-            
-                var dummy: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKey.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKey.self] = newValue
-                    }
-                }
-            }
-            """
+
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        typealias Value = DummyDependency
+        static let defaultValue: Value = DummyDependency()
+    }
+
+    var dummy: DummyDependency {
+        get {
+            self [DummyEnvironmentKey.self]
+        }
+        set {
+            self [DummyEnvironmentKey.self] = newValue
+        }
+    }
+}
+"""
 
 private let oneArgNoType: String = """
-            @EnvironmentValue("dummy")
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    static let defaultValue = DummyDependency()
-                }
-            }
-            """
+@EnvironmentValue("dummy")
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = DummyDependency()
+    }
+}
+"""
 
 private let oneArgNoTypeExpansion: String = """
-            
-            extension EnvironmentValues {
-                struct DummyEnvironmentKey: EnvironmentKey {
-                    static let defaultValue = DummyDependency()
-                }
-            
-                var dummy: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKey.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKey.self] = newValue
-                    }
-                }
-            }
-            """
+
+extension EnvironmentValues {
+    struct DummyEnvironmentKey: EnvironmentKey {
+        static let defaultValue = DummyDependency()
+    }
+
+    var dummy: DummyDependency {
+        get {
+            self [DummyEnvironmentKey.self]
+        }
+        set {
+            self [DummyEnvironmentKey.self] = newValue
+        }
+    }
+}
+"""
 
 private let multiArgs: String = """
-            @EnvironmentValue("one", "two", "three")
-            extension EnvironmentValues {
-                struct DummyEnvironmentKeyOne: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-                struct DummyEnvironmentKeyTwo: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-                struct DummyEnvironmentKeyThree: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-            }
-            """
+@EnvironmentValue("one", "two", "three")
+extension EnvironmentValues {
+    struct DummyEnvironmentKeyOne: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+    struct DummyEnvironmentKeyTwo: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+    struct DummyEnvironmentKeyThree: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+}
+"""
 
 private let multiArgsExpansion: String = """
-            
-            extension EnvironmentValues {
-                struct DummyEnvironmentKeyOne: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-                struct DummyEnvironmentKeyTwo: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-                struct DummyEnvironmentKeyThree: EnvironmentKey {
-                    static let defaultValue: DummyDependency = DummyDependency()
-                }
-            
-                var one: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKeyOne.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKeyOne.self] = newValue
-                    }
-                }
-            
-                var two: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKeyTwo.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKeyTwo.self] = newValue
-                    }
-                }
-            
-                var three: DummyDependency {
-                    get {
-                        self [DummyEnvironmentKeyThree.self]
-                    }
-                    set {
-                        self [DummyEnvironmentKeyThree.self] = newValue
-                    }
-                }
-            }
-            """
+
+extension EnvironmentValues {
+    struct DummyEnvironmentKeyOne: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+    struct DummyEnvironmentKeyTwo: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+    struct DummyEnvironmentKeyThree: EnvironmentKey {
+        static let defaultValue: DummyDependency = DummyDependency()
+    }
+
+    var one: DummyDependency {
+        get {
+            self [DummyEnvironmentKeyOne.self]
+        }
+        set {
+            self [DummyEnvironmentKeyOne.self] = newValue
+        }
+    }
+
+    var two: DummyDependency {
+        get {
+            self [DummyEnvironmentKeyTwo.self]
+        }
+        set {
+            self [DummyEnvironmentKeyTwo.self] = newValue
+        }
+    }
+
+    var three: DummyDependency {
+        get {
+            self [DummyEnvironmentKeyThree.self]
+        }
+        set {
+            self [DummyEnvironmentKeyThree.self] = newValue
+        }
+    }
+}
+"""

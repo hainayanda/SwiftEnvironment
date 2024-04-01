@@ -107,7 +107,7 @@ SomeView()
     .environment(\.myValue, SomeDependency())
 ```
 
-### Stubbed macro
+### Stubbed macro on protocols
 
 The `Stubbed` macro simplifies the creation of stubs from protocols, reducing boilerplate code. To use the `Stubbed` macro, simply add `@Stubbed` to the protocol you wish to create a stub for:
 
@@ -140,6 +140,39 @@ import SwiftEnvironment
 protocol MyProtocol { 
     var someValue: MyType { get }
     func calculate(someValue: Int) -> MyType
+}
+```
+
+You can provide multiple types as variadic parameters.
+
+### Stubbed macro on struct and class
+
+The `Stubbed` macro simplifies the creation of stubs for class or struct, reducing boilerplate code. To use the `Stubbed` macro, simply add `@Stubbed` to the class or struct you wish to create a stub for:
+
+```swift
+import SwiftEnvironment
+
+@Stubbed
+struct MyStruct { 
+    let someValue: Int
+    let someString: String
+}
+```
+
+Then you can get your stub by calling generated static variable .stub:
+
+```swift
+let myStructStub = MyStruct.stub
+```
+
+If the return type of the protocol's methods or variables is unknown or you want to customize the value, you can provide the default value using `.value(for: <custom type>.self, <custom default value>)`:
+
+```swift
+import SwiftEnvironment
+
+@Stubbed(.value(for: MyType.self, MyType()))
+struct MyStruct {
+    let someValue: MyType
 }
 ```
 

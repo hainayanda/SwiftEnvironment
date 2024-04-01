@@ -8,17 +8,15 @@
 import Foundation
 
 public enum StubGeneratorMacroError: CustomStringConvertible, Error {
-    case onlyAvailableForProtocol
     case failedToExtractVariables
     case cannotDetermineDefaultValue(String)
     case unknownSubType(String)
     case unknownArguments(String)
     case cannotUseStructForObjectProtocol
+    case cannotDetermineType(String)
     
     public var description: String {
         switch self {
-        case .onlyAvailableForProtocol:
-            return "@Stubbed only available for structure"
         case .failedToExtractVariables:
             return "@Stubbed failed to extract one of variables"
         case .cannotDetermineDefaultValue(let type):
@@ -29,6 +27,8 @@ public enum StubGeneratorMacroError: CustomStringConvertible, Error {
             return "@Stubbed got unknown argument of \(arg)"
         case .cannotUseStructForObjectProtocol:
             return "@Stubbed should use class as type arguments because the protocol is marked as AnyObject"
+        case .cannotDetermineType(let arg):
+            return "@Stubbed failed to determined type of \(arg)"
         }
     }
 }
