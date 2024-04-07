@@ -58,11 +58,9 @@ protocol MyProtocol {
 }
 
 // add to EnvironmentValues
-@EnvironmentValue("myValue")
+@EnvironmentValue
 extension EnvironmentValues {
-    struct MyProtocolKey: EnvironmentKey {
-        static let defaultValue = MyProtocolStub()
-    }
+    static let myValue: MyProtocol = MyProtocolStub()
 }
 ```
 
@@ -79,18 +77,45 @@ Different than SwiftUI Environment, GlobalEnvironment can be injected and access
 GlobalResolver.environment(\.myValue, MyImplementation())
 ```
 
+### GlobalEnvironment
+
+`GlobalEnvironment` complements SwiftUI Environment. It allows `EnvironmentValues` to be accessed globally outside of SwiftUI injection scope. To use it, add EnvironmentValues just like how we add it for SwiftUI, and inject it into `GlobalResolver`:
+
+```swift
+@GlobalEnvironment(\.myValue) var myValue
+```
+
+To provide gobal environment use GlobalResolver static methods:
+
+```swift
+GlobalResolver
+    .environment(\.myValue, SomeDependency())
+```
+
+You can connect multiple KeyPaths to one KeyPaths by a single call:
+
+```swift
+GlobalResolver
+    .environment(\.this, \.that, use: \.myValue)
+```
+
+To resolve dependency manually from GlobalResolver, do this:
+
+```swift
+let myValue = GlobalResolver.resolve(\.myValue)
+```
+
+
 ### EnvironmentValue macro
 
-The `EnvironmentValue` macro is used to remove boilerplate code when adding a new variable to EnvironmentValue. To use it, simply add `@EnvironmentValue("<name of the value KeyPath>")` to the extension of `EnvironmentValues` with the structure of your `EnvironmentKey`.
+The `EnvironmentValue` macro is used to remove boilerplate code when adding a new variable to EnvironmentValue. To use it, simply add `@EnvironmentValue` to the extension of `EnvironmentValues` with static variable of your default environmentValue.
 
 ```swift
 import SwiftEnvironment
 
-@EnvironmentValue("myValue")
+@EnvironmentValue
 extension EnvironmentValues {
-    struct MyEnvironmentKey: EnvironmentKey {
-        static let defaultValue = MyDependency()
-    }
+    static let myValue: Dependency = MyDependency()
 }
 ```
 
@@ -177,35 +202,6 @@ struct MyStruct {
 ```
 
 You can provide multiple types as variadic parameters.
-
-### GlobalEnvironment
-
-`GlobalEnvironment` complements SwiftUI Environment. It allows `EnvironmentValues` to be accessed globally outside of SwiftUI injection scope. To use it, add EnvironmentValues just like how we add it for SwiftUI, and inject it into `GlobalResolver`:
-
-```swift
-GlobalResolver
-    .environment(\.myValue, SomeDependency())
-```
-
-Then, you can access it globally using `GlobalEnvironment` property wrapper:
-
-```swift
-@GlobalEnvironment(\.myValue) var myValue
-```
-
-You can connect multiple KeyPaths to one KeyPaths by a single call:
-
-```swift
-GlobalResolver
-    .environment(\.this, \.that, use: \.myValue)
-```
-
-To resolve dependency manually from GlobalResolver, do this:
-
-```swift
-let myValue = GlobalResolver.resolve(\.myValue)
-```
-
 
 ### GlobalResolver environment
 
