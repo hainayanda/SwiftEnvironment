@@ -18,4 +18,6 @@ extension String {
             return false
         }
     }
+    
+    var firstCapitalized: String { return prefix(1).capitalized + dropFirst() }
 }

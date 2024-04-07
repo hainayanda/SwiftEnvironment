@@ -8,7 +8,7 @@
 import Foundation
 
 @attached(member, names: arbitrary)
-public macro EnvironmentValue(_ keys: String...) = #externalMacro(
+public macro EnvironmentValue() = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "EnvironmentValueMacro"
 )
 
