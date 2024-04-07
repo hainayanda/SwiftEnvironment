@@ -49,18 +49,18 @@ final class EnvironmentValueMacroTests: XCTestCase {
 
 private let oneImplicitArg: String = """
 @EnvironmentValue
-extension EnvironmentValues {
+public extension EnvironmentValues {
     static let dummy = Some.Dependency()
 }
 """
 
 private let oneImplicitArgExpansion: String = """
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     static let dummy = Some.Dependency()
 
     struct DummySwiftEnvironmentKey: EnvironmentKey {
-        static let defaultValue: Some.Dependency = EnvironmentValues.dummy
+        public static let defaultValue: Some.Dependency = EnvironmentValues.dummy
     }
 
     var dummy: Some.Dependency {
@@ -103,18 +103,18 @@ extension EnvironmentValues {
 
 private let oneArg: String = """
 @EnvironmentValue
-extension EnvironmentValues {
+public extension EnvironmentValues {
     static let dummy: DummyDependency = DummyDependency()
 }
 """
 
 private let oneArgExpansion: String = """
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     static let dummy: DummyDependency = DummyDependency()
 
     struct DummySwiftEnvironmentKey: EnvironmentKey {
-        static let defaultValue: DummyDependency = EnvironmentValues.dummy
+        public static let defaultValue: DummyDependency = EnvironmentValues.dummy
     }
 
     var dummy: DummyDependency {
@@ -157,7 +157,7 @@ extension EnvironmentValues {
 
 private let multiArgs: String = """
 @EnvironmentValue("one", "two", "three")
-extension EnvironmentValues {
+public extension EnvironmentValues {
     static let one = DummyDependency()
     static let two = DummyDependency()
     static let three = DummyDependency()
@@ -166,13 +166,13 @@ extension EnvironmentValues {
 
 private let multiArgsExpansion: String = """
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     static let one = DummyDependency()
     static let two = DummyDependency()
     static let three = DummyDependency()
 
     struct OneSwiftEnvironmentKey: EnvironmentKey {
-        static let defaultValue: DummyDependency = EnvironmentValues.one
+        public static let defaultValue: DummyDependency = EnvironmentValues.one
     }
 
     var one: DummyDependency {
@@ -185,7 +185,7 @@ extension EnvironmentValues {
     }
 
     struct TwoSwiftEnvironmentKey: EnvironmentKey {
-        static let defaultValue: DummyDependency = EnvironmentValues.two
+        public static let defaultValue: DummyDependency = EnvironmentValues.two
     }
 
     var two: DummyDependency {
@@ -198,7 +198,7 @@ extension EnvironmentValues {
     }
 
     struct ThreeSwiftEnvironmentKey: EnvironmentKey {
-        static let defaultValue: DummyDependency = EnvironmentValues.three
+        public static let defaultValue: DummyDependency = EnvironmentValues.three
     }
 
     var three: DummyDependency {

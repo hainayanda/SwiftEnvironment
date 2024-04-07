@@ -26,17 +26,21 @@ public struct EnvironmentValueMacro: MemberMacro {
 }
 
 struct EnvironmentDeclaration: CustomStringConvertible {
+    let isPublic: Bool
     let baseName: String
     let type: String
     
     var derivedName: String {
         "\(baseName.firstCapitalized)SwiftEnvironmentKey"
     }
+    var accessModifier: String {
+        isPublic ? "public " : ""
+    }
     
     var description: String {
         """
         struct \(derivedName): EnvironmentKey {
-            static let defaultValue: \(type) = EnvironmentValues.\(baseName)
+            \(accessModifier)static let defaultValue: \(type) = EnvironmentValues.\(baseName)
         }
         
         var \(baseName): \(type) {
@@ -55,7 +59,8 @@ struct EnvironmentDeclaration: CustomStringConvertible {
 
 private extension ExtensionDeclSyntax {
     var environmentDeclaration: [EnvironmentDeclaration] {
-        memberBlock.members
+        let isPublic = self.modifiers.contains { $0.trimmedDescription == "public" }
+        return memberBlock.members
             .compactMap { $0.decl.as(VariableDeclSyntax.self) }
             .filter { $0.isStatic }
             .compactMap { variable in
@@ -63,7 +68,7 @@ private extension ExtensionDeclSyntax {
                       let type = variable.typeAnnotation ?? variable.initializer else {
                     return nil
                 }
-                return EnvironmentDeclaration(baseName: name, type: type)
+                return EnvironmentDeclaration(isPublic: isPublic, baseName: name, type: type)
                 
             }
     }
