@@ -98,27 +98,13 @@ final class IntegrationTests: XCTestCase {
     
 }
 
-typealias DummyEnvironmentKey = EnvironmentValues.DummyEnvironmentKey
+typealias DummyEnvironmentKey = EnvironmentValues.DummySwiftEnvironmentKey
 
-@EnvironmentValue("dummy", "secondDummy", "thirdDummy", "fourthDummy", "fifthDummy")
+@EnvironmentValue
 extension EnvironmentValues {
-    struct DummyEnvironmentKey: EnvironmentKey {
-        static let defaultValue = DummyDependencyStub()
-    }
-    
-    struct SecondDummyEnvironmentKey: EnvironmentKey {
-        static let defaultValue = DummyDependencyStub()
-    }
-    
-    struct ThirdDummyEnvironmentKey: EnvironmentKey {
-        static let defaultValue = DummyDependencyStub()
-    }
-    
-    struct FourthDummyEnvironmentKey: EnvironmentKey {
-        static let defaultValue = DummyDependencyStub()
-    }
-    
-    struct FiftDummyEnvironmentKey: EnvironmentKey {
-        static let defaultValue: String = "dummy"
-    }
+    static let dummy = DummyDependencyStub()
+    static let secondDummy = DummyDependencyStub()
+    static let thirdDummy = DummyDependencyStub()
+    static let fourthDummy = DummyDependencyStub()
+    static let fifthDummy: String = "dummy"
 }
