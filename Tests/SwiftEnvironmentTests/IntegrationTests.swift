@@ -96,7 +96,7 @@ final class IntegrationTests: XCTestCase {
         XCTAssertEqual(dummy, "dummy")
     }
     
-    func test_givenClassAndStruct_whenStubbed_shouldHaveStub()  {
+    func test_givenClassAndStruct_whenStubbed_shouldHaveStub() {
         _ = DummyClass.stub
         _ = DummyStruct.stub
     }
