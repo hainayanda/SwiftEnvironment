@@ -62,7 +62,7 @@ class Some {
 
     init(double: Double) {
         self.double = double
-        self.int = int
+        self.int = 0
     }
 }
 """
@@ -75,10 +75,12 @@ class Some {
 
     init(double: Double) {
         self.double = double
-        self.int = int
+        self.int = 0
     }
 
-    static var stub: Some = Some(int: 0, double: 0.0)
+    static var stub: Some {
+        Some(int: 0, double: 0.0)
+    }
     init(int: Int, double: Double) {
         self.int = int
         self.double = double
@@ -111,7 +113,9 @@ class Some {
         self.int = int
     }
 
-    static var stub: Some = Some(double: 0.0, int: 0)
+    static var stub: Some {
+        Some(double: 0.0, int: 0)
+    }
 }
 """
 
@@ -140,7 +144,9 @@ class Some {
         self.double = double
     }
 
-    static var stub: Some = Some(int: 0, double: 0.0)
+    static var stub: Some {
+        Some(int: 0, double: 0.0)
+    }
 }
 """
 
@@ -159,7 +165,9 @@ class Some {
     var double: Double
     let string: String = ""
 
-    static var stub: Some = Some(int: 0, double: 0.0)
+    static var stub: Some {
+        Some(int: 0, double: 0.0)
+    }
     init(int: Int, double: Double) {
         self.int = int
         self.double = double
@@ -182,6 +190,8 @@ struct Some {
     var double: Double
     let string: String = ""
 
-    static var stub: Some = Some(int: 0, double: 0.0)
+    static var stub: Some {
+        Some(int: 0, double: 0.0)
+    }
 }
 """

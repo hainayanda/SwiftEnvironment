@@ -9,7 +9,17 @@
 import Foundation
 import SwiftEnvironment
 
-@Stubbed
+@Stubbed(type: .class)
 protocol DummyDependency: AnyObject {
     var id: UUID { get }
+}
+
+@Stubbed
+struct DummyStruct {
+    let id: UUID
+}
+
+@Stubbed
+struct DummyClass {
+    let id: UUID
 }

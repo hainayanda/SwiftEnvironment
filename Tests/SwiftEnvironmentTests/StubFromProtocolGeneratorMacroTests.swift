@@ -44,14 +44,6 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         )
     }
     
-    func test_givenNamedProtocol_shouldGenerateDefault() {
-        assertMacroExpansion(
-            namedProtocol,
-            expandedSource: namedProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
-        )
-    }
-    
     func test_givenClassProtocol_shouldGenerateDefault() {
         assertMacroExpansion(
             classProtocol,
@@ -102,7 +94,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
 }
 
 private let anyObjectProtocol: String = """
-@Stubbed
+@Stubbed(type: .class)
 protocol Some: AnyObject {
     var int: Int { get }
 }
@@ -121,7 +113,7 @@ final class SomeStub: Some {
 """
 
 private let allArgsProtocol: String = """
-@Stubbed(name: "SomeName", type: .subclass(Super.self), .value(for: Int.self, 1), .value(for: Unknown.self, Unknown()))
+@Stubbed(type: .subclass(Super.self), .value(for: Int.self, 1), .value(for: Unknown.self, Unknown()))
 protocol Some {
     var int: Int { get }
     var unknown: Unknown { get }
@@ -134,7 +126,7 @@ protocol Some {
     var unknown: Unknown { get }
 }
 
-final class SomeNameStub: Super, Some {
+final class SomeStub: Super, Some {
     let int: Int = 1
     let unknown: Unknown = Unknown()
     init() {
@@ -162,7 +154,7 @@ struct SomeStub: Some {
 """
 
 private let injectValueProtocol: String = """
-@Stubbed(.value(for: Int.self, 1), .value(for: Unknown.self, Unknown()))
+@Stubbed(type: .struct, .value(for: Int.self, 1), .value(for: Unknown.self, Unknown()))
 protocol Some {
     var int: Int { get }
     var unknown: Unknown { get }
@@ -221,27 +213,8 @@ final class SomeStub: Some {
 }
 """
 
-private let namedProtocol: String = """
-@Stubbed(name: "SomeName")
-protocol Some {
-    var int: Int { get }
-}
-"""
-
-private let namedProtocolExpansion: String = """
-protocol Some {
-    var int: Int { get }
-}
-
-struct SomeNameStub: Some {
-    let int: Int = 0
-    init() {
-    }
-}
-"""
-
 private let simpleProtocol: String = """
-@Stubbed
+@Stubbed(type: .struct)
 protocol Some {
     var int: Int { get }
     var double: Double { get set }
@@ -303,7 +276,7 @@ struct SomeStub: Some {
 """
 
 private let optionalProtocol: String = """
-@Stubbed
+@Stubbed(type: .struct)
 protocol Some {
     var int: Int? { get }
     var double: Optional<Double> { get set }
@@ -356,7 +329,7 @@ struct SomeStub: Some {
 """
 
 private let arrayProtocol: String = """
-@Stubbed
+@Stubbed(type: .struct)
 protocol Some {
     var int: [Int] { get }
     var double: Array<Double> { get set }
@@ -409,7 +382,7 @@ struct SomeStub: Some {
 """
 
 private let dictionaryProtocol: String = """
-@Stubbed
+@Stubbed(type: .struct)
 protocol Some {
     var int: [Int: Unknown] { get }
     var double: Dictionary<Double, Unknown?> { get set }
