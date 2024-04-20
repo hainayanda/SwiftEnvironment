@@ -26,7 +26,6 @@ extension StubGeneratorMacro: PeerMacro {
                 for: protocolSyntax.name.text,
                 isObjectProtocol: isObjectProtocol
             ),
-            givenName: node.nameArgument,
             with: DefaultValueGenerator(defaultValues: defaultValues)
         )
         return [ "\(raw: result.description)" ]
@@ -36,13 +35,6 @@ extension StubGeneratorMacro: PeerMacro {
 // MARK: Private extensions
 
 private extension AttributeSyntax {
-    var nameArgument: String? {
-        let argument = arguments?.as(LabeledExprListSyntax.self)?
-            .first { $0.label?.trimmedDescription == "name" }
-        guard let argument else { return nil }
-        return argument.expression.as(StringLiteralExprSyntax.self)?
-            .segments.first?.trimmedDescription
-    }
     
     func typeArgument(for protocolName: String, isObjectProtocol: Bool) throws -> StubDeclaration.InstanceType {
         let baseArgument = arguments?.as(LabeledExprListSyntax.self)?
@@ -132,9 +124,9 @@ private extension FunctionDeclSyntax {
 }
 
 private extension ProtocolDeclSyntax {
-    func defaultInstance(_ instanceType: StubDeclaration.InstanceType, givenName: String?, with defaultValues: DefaultValueGenerator) throws -> StubDeclaration {
+    func defaultInstance(_ instanceType: StubDeclaration.InstanceType, with defaultValues: DefaultValueGenerator) throws -> StubDeclaration {
         try StubDeclaration(
-            instanceType: instanceType, name: "\(givenName ?? name.text)Stub",
+            instanceType: instanceType, name: "\(name.text)Stub",
             variables: variables(with: defaultValues),
             methods: methods(with: defaultValues)
         )

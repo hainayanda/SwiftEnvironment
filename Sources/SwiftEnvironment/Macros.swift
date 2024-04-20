@@ -12,13 +12,18 @@ public macro EnvironmentValue() = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "EnvironmentValueMacro"
 )
 
-@attached(peer, names: suffixed(Stub))
-public macro Stubbed(name: String? = nil, type: StubType = .struct) = #externalMacro(
+@attached(member, names: arbitrary)
+public macro Stubbed() = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
 )
 
 @attached(peer, names: suffixed(Stub))
-public macro Stubbed(name: String? = nil, type: StubType = .struct, _ values: DefaultType...) = #externalMacro(
+public macro Stubbed(type: StubType) = #externalMacro(
+    module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
+)
+
+@attached(peer, names: suffixed(Stub))
+public macro Stubbed(type: StubType, _ values: DefaultType...) = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
 )
 

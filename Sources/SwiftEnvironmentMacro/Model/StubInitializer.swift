@@ -13,19 +13,19 @@ struct StubInitializer: CustomStringConvertible {
     let argumentPairs: [InitArgumentPairs]
     
     var description: String {
-        let singletonClause = "static var stub: \(name) = \(name)("
+        let singletonClause = "static var stub: \(name) { \(name)("
         let arguments = argumentPairs.compactMap { $0.asArguments }.joined(separator: ", ")
         if generateInit {
             let initArguments = argumentPairs.compactMap { $0.asInitDeclaration }.joined(separator: ", ")
             let body = argumentPairs.compactMap { $0.asInitBodyInitializer }.joined(separator: "\n    ")
             return """
-            \(singletonClause)\(arguments))
+            \(singletonClause)\(arguments)) }
             init(\(initArguments)) {
                 \(body)
             }
             """
         }
-        return "    \(singletonClause)\(arguments))"
+        return "    \(singletonClause)\(arguments)) }"
     }
 }
 

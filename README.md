@@ -52,7 +52,7 @@ This library is designed to allow easier dependency management, using exisiting 
 
 ```swift
 // protocol with stub
-@Stubbed
+@Stubbed(type: .class)
 protocol MyProtocol {
     func doSomething()
 }
@@ -139,7 +139,7 @@ The `Stubbed` macro simplifies the creation of stubs from protocols, reducing bo
 ```swift
 import SwiftEnvironment
 
-@Stubbed
+@Stubbed(type: .struct)
 protocol MyProtocol { 
     var someValue: Int { get }
     func calculate(someValue: Int) -> Int
@@ -161,7 +161,7 @@ If the return type of the protocol's methods or variables is unknown or you want
 ```swift
 import SwiftEnvironment
 
-@Stubbed(.value(for: MyType.self, MyType()))
+@Stubbed(type: .class, .value(for: MyType.self, MyType()))
 protocol MyProtocol { 
     var someValue: MyType { get }
     func calculate(someValue: Int) -> MyType
