@@ -83,6 +83,14 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
             macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
+    
+    func test_givenUnknownTypeStruct_shouldGenerateDefault() {
+        assertMacroExpansion(
+            unknownTypeStruct,
+            expandedSource: unknownTypeStructExpansion,
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
+        )
+    }
 }
 
 private let simpleStructWithOptional: String = """
@@ -108,6 +116,8 @@ struct Some {
         Some(optionalClosure: nil, optionalInt: nil, optionalArray: nil, optionalTupple: (nil, nil), realOptional: nil)
     }
 }
+
+typealias SomeStub = Some
 """
 
 private let simpleClassWithClosure: String = """
@@ -153,6 +163,8 @@ class Some {
         self.argsReturnClosure = argsReturnClosure
     }
 }
+
+typealias SomeStub = Some
 """
 // swiftlint:enable line_length
 
@@ -190,6 +202,8 @@ struct Some {
             })
     }
 }
+
+typealias SomeStub = Some
 """
 
 private let simpleClassWithDifferentInit: String = """
@@ -226,6 +240,8 @@ class Some {
         self.double = double
     }
 }
+
+typealias SomeStub = Some
 """
 
 private let simpleClassWithRandomInit: String = """
@@ -257,6 +273,8 @@ class Some {
         Some(double: 0.0, int: 0)
     }
 }
+
+typealias SomeStub = Some
 """
 
 private let simpleClassWithInit: String = """
@@ -288,11 +306,13 @@ class Some {
         Some(int: 0, double: 0.0)
     }
 }
+
+typealias SomeStub = Some
 """
 
 private let simpleClass: String = """
 @Stubbed
-class Some {
+public class Some {
     let int: Int
     var double: Double
     let string: String = ""
@@ -300,7 +320,7 @@ class Some {
 """
 
 private let simpleClassExpansion: String = """
-class Some {
+public class Some {
     let int: Int
     var double: Double
     let string: String = ""
@@ -314,6 +334,8 @@ class Some {
         self.double = double
     }
 }
+
+public typealias SomeStub = Some
 """
 
 private let simpleStruct: String = """
@@ -335,18 +357,20 @@ struct Some {
         Some(int: 0, double: 0.0)
     }
 }
+
+typealias SomeStub = Some
 """
 
 private let typeAliasStruct: String = """
 @Stubbed
-struct Some {
+public struct Some {
     typealias MyAlias = Int
     let int: MyAlias
 }
 """
 
 private let typeAliasStructExpansion: String = """
-struct Some {
+public struct Some {
     typealias MyAlias = Int
     let int: MyAlias
 
@@ -354,4 +378,25 @@ struct Some {
         Some(int: 0)
     }
 }
+
+public typealias SomeStub = Some
+"""
+
+private let unknownTypeStruct: String = """
+@Stubbed
+public struct Some {
+    let unknown: Unknown
+}
+"""
+
+private let unknownTypeStructExpansion: String = """
+public struct Some {
+    let unknown: Unknown
+
+    static var stub: Some {
+        Some(unknown: UnknownStub.stub)
+    }
+}
+
+public typealias SomeStub = Some
 """

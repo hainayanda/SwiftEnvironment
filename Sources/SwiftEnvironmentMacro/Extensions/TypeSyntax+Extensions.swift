@@ -39,7 +39,7 @@ extension TypeSyntax {
             }
             return "(\(partial))"
         } else {
-            return "\(trimmedDescription).stub"
+            return "\(trimmedDescription)Stub.stub"
         }
     }
 }
