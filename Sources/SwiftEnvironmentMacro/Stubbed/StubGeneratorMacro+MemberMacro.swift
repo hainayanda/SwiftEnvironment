@@ -81,8 +81,7 @@ private extension TypeSyntax {
             return value
         } else if description.match(#"^(Void|\(\s*\))$"#) {
             return "Void()"
-        }
-        else if self.as(OptionalTypeSyntax.self) != nil || description.match(#"^Optional<.+>$"#) {
+        } else if self.as(OptionalTypeSyntax.self) != nil || description.match(#"^Optional<.+>$"#) {
             return "nil"
         } else if self.as(ArrayTypeSyntax.self) != nil {
             return "[]"
