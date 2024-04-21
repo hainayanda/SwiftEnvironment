@@ -22,12 +22,30 @@ let baseDefaultValues: [String: String] = [
 ]
 
 extension AttributeSyntax {
+    var hasModifiers: Bool {
+        get {
+            guard let firstArgument = arguments?.as(LabeledExprListSyntax.self)?
+                .first?.as(LabeledExprSyntax.self) else { return false }
+            return firstArgument.trimmedDescription == ".publicStub"
+            || firstArgument.trimmedDescription == ".internalStub"
+        }
+    }
+    
+    var isPublicStub: Bool {
+        get {
+            guard let firstArgument = arguments?.as(LabeledExprListSyntax.self)?
+                .first?.as(LabeledExprSyntax.self) else { return false }
+            return firstArgument.trimmedDescription == ".publicStub"
+        }
+    }
+    
     var defaultValueArguments: [String: String] {
         get throws {
             let arguments = arguments?.as(LabeledExprListSyntax.self)?
                 .filter { $0.label == nil }
                 .compactMap { $0.as(LabeledExprSyntax.self) }
-            guard let arguments else { return [:] }
+            guard var arguments else { return [:] }
+            arguments = hasModifiers ? Array(arguments.suffix(from: 1)) : arguments
             return try arguments
                 .map { try $0.extractDefaultValueArguments() }
                 .mapToTypeDefaultValueArguments()
