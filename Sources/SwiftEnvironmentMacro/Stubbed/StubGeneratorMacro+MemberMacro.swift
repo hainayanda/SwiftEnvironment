@@ -38,6 +38,8 @@ extension StubGeneratorMacro: MemberMacro {
     }
 }
 
+// MARK: Private extensions
+
 private extension DeclGroupSyntax {
     var structName: String? {
         self.as(StructDeclSyntax.self)?.name.trimmedDescription
@@ -50,20 +52,6 @@ private extension DeclGroupSyntax {
     }
 }
 
-private extension MemberBlockItemListSyntax {
-    var variables: [VariableDeclSyntax] {
-        compactMap { member in
-            member.decl.as(VariableDeclSyntax.self)
-        }
-    }
-    
-    var initializers: [InitializerDeclSyntax] {
-        compactMap { member in
-            member.decl.as(InitializerDeclSyntax.self)
-        }
-    }
-}
-
 private extension InitializerDeclSyntax {
     var arguments: [InitArgumentPairs] {
         signature.parameterClause.parameters.map { parameter in
@@ -72,48 +60,6 @@ private extension InitializerDeclSyntax {
                 type: parameter.type.trimmedDescription
             )
         }
-    }
-}
-
-private extension TypeSyntax {
-    func defaultValue(use mappedValue: [String: String]) throws -> String {
-        if let value = mappedValue[description] {
-            return value
-        } else if description.match(#"^(Void|\(\s*\))$"#) {
-            return "Void()"
-        } else if self.as(OptionalTypeSyntax.self) != nil || description.match(#"^Optional<.+>$"#) {
-            return "nil"
-        } else if self.as(ArrayTypeSyntax.self) != nil {
-            return "[]"
-        } else if let function = self.as(FunctionTypeSyntax.self) {
-            let argumentCount = function.parameters.as(TupleTypeElementListSyntax.self)?.count ?? 0
-            let arguments = (0..<argumentCount).reduce("") { partialResult, _ in
-                if partialResult.isEmpty { return "_" }
-                return "\(partialResult), _"
-            }
-            let argumentsClause = arguments.isEmpty ? "" : "\(arguments) in"
-            let returnClause = try function.returnClause.defaultReturnClause(use: mappedValue)
-            return "{ \(argumentsClause) \(returnClause) }"
-        } else if let tuple = self.as(TupleTypeSyntax.self) {
-            let partial = try tuple.elements.map { element in
-                try element.type.defaultValue(use: mappedValue)
-            }
-            .reduce("") { partialResult, value in
-                if partialResult.isEmpty { return value }
-                return "\(partialResult), \(value)"
-            }
-            return "(\(partial))"
-        } else {
-            throw StubGeneratorMacroError.cannotDetermineDefaultValue(description)
-        }
-    }
-}
-
-private extension ReturnClauseSyntax {
-    func defaultReturnClause(use mappedValue: [String: String]) throws -> String {
-        let value = try type.defaultValue(use: mappedValue)
-        guard value != "Void()" else { return "" }
-        return "return \(value)"
     }
 }
 
@@ -140,19 +86,7 @@ private extension Array where Element == InitArgumentPairs {
     }
 }
 
-private extension Sequence where Element == VariableDeclSyntax {
-    var patternBindings: [PatternBindingSyntax] {
-        compactMap { declaration in
-            guard declaration.bindings.count == 1,
-                  let binding = declaration.bindings.first?.as(PatternBindingSyntax.self) else {
-                return nil
-            }
-            return binding
-        }
-    }
-}
-
-private extension Sequence where Element == PatternBindingSyntax {
+extension Sequence where Element == PatternBindingSyntax {
     var withNoInitializers: [PatternBindingSyntax] {
         filter { binding in
             binding.initializer == nil
