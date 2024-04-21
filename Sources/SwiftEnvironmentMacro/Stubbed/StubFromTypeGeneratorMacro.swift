@@ -50,17 +50,15 @@ public struct StubFromTypeGeneratorMacro: MemberMacro {
 }
 
 extension StubFromTypeGeneratorMacro: PeerMacro {
-    public static func expansion(of node: SwiftSyntax.AttributeSyntax, providingPeersOf declaration: some SwiftSyntax.DeclSyntaxProtocol, in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
+    public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard  let name = declaration.className ?? declaration.structName else {
             return []
         }
         let isPublic = declaration.isPublic
-        let modifiers = isPublic ? "public ": ""
-        let typeAlias = "\(modifiers)typealias \(name)Stub = \(name)"
+        let modifier = isPublic ? "public ": ""
+        let typeAlias = "\(modifier)typealias \(name)Stub = \(name)"
         return ["\(raw: typeAlias)"]
     }
-    
-    
 }
 
 // MARK: Private extensions
