@@ -49,7 +49,42 @@ public struct StubFromTypeGeneratorMacro: MemberMacro {
     }
 }
 
+extension StubFromTypeGeneratorMacro: PeerMacro {
+    public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
+        guard  let name = declaration.className ?? declaration.structName else {
+            return []
+        }
+        let isPublic = declaration.isPublic
+        let modifier = isPublic ? "public ": ""
+        let typeAlias = "\(modifier)typealias \(name)Stub = \(name)"
+        return ["\(raw: typeAlias)"]
+    }
+}
+
 // MARK: Private extensions
+
+private extension DeclSyntaxProtocol {
+    var structName: String? {
+        self.as(StructDeclSyntax.self)?.name.trimmedDescription
+    }
+    var className: String? {
+        self.as(ClassDeclSyntax.self)?.name.trimmedDescription
+    }
+    var isClass: Bool {
+        self.as(ClassDeclSyntax.self) != nil
+    }
+    var isPublic: Bool {
+        if isClass {
+            return self.as(ClassDeclSyntax.self)?.modifiers
+                .map { $0.trimmedDescription }
+                .contains("public") ?? false
+        } else {
+            return self.as(StructDeclSyntax.self)?.modifiers
+                .map { $0.trimmedDescription }
+                .contains("public") ?? false
+        }
+    }
+}
 
 private extension DeclGroupSyntax {
     var structName: String? {

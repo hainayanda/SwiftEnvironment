@@ -106,6 +106,9 @@ protocol Some: AnyObject {
 }
 
 final class SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 0
     init() {
     }
@@ -127,6 +130,9 @@ protocol Some {
 }
 
 final class SomeStub: Super, Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 1
     let unknown: Unknown = Unknown()
     init() {
@@ -147,6 +153,9 @@ protocol Some {
 }
 
 struct SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 0
     init() {
     }
@@ -168,6 +177,9 @@ protocol Some {
 }
 
 struct SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 1
     let unknown: Unknown = Unknown()
     init() {
@@ -188,6 +200,9 @@ protocol Some {
 }
 
 final class SomeStub: Super, Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 0
     init() {
     }
@@ -207,6 +222,9 @@ protocol Some {
 }
 
 final class SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 0
     init() {
     }
@@ -248,6 +266,9 @@ protocol Some {
 }
 
 struct SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int = 0
     var double: Double = 0.0
     let bool: Bool = false
@@ -303,6 +324,9 @@ protocol Some {
 }
 
 struct SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: Int? = nil
     var double: Optional<Double> = nil
     let bool: Bool? = nil
@@ -356,6 +380,9 @@ protocol Some {
 }
 
 struct SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: [Int] = []
     var double: Array<Double> = []
     let bool: [Bool] = []
@@ -409,6 +436,9 @@ protocol Some {
 }
 
 struct SomeStub: Some {
+    static var stub: Some {
+        SomeStub()
+    }
     let int: [Int: Unknown] = [:]
     var double: Dictionary<Double, Unknown?> = [:]
     let bool: [Bool: (Unknown)] = [:]

@@ -10,7 +10,6 @@ import Foundation
 public enum StubGeneratorMacroError: CustomStringConvertible, Error {
     case failedToExtractVariables
     case cannotDetermineDefaultValue(String)
-    case unknownSubType(String)
     case unknownArguments(String)
     case cannotUseStructForObjectProtocol
     case cannotDetermineType(String)
@@ -21,8 +20,6 @@ public enum StubGeneratorMacroError: CustomStringConvertible, Error {
             return "@Stubbed failed to extract one of variables"
         case .cannotDetermineDefaultValue(let type):
             return "@Stubbed failed to determine default value for \(type)"
-        case .unknownSubType(let type):
-            return "@Stubbed failed to determine type of stub: \(type)"
         case .unknownArguments(let arg):
             return "@Stubbed got unknown argument of \(arg)"
         case .cannotUseStructForObjectProtocol:
