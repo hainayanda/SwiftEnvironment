@@ -41,7 +41,9 @@ extension StubGeneratorMacro: MemberMacro {
         }
         
         let stubInitializer = StubInitializer(name: name, generateInit: matchedInit == nil && isClass, argumentPairs: arguments)
-        return ["\(raw: stubInitializer.description)"]
+        return [stubInitializer.singletonDeclaration, stubInitializer.initDeclaration]
+            .compactMap { $0 }
+            .map { "\(raw: $0)" }
     }
 }
 

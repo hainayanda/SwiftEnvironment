@@ -7,25 +7,28 @@
 
 import Foundation
 
-struct StubInitializer: CustomStringConvertible {
+struct StubInitializer {
     let name: String
     let generateInit: Bool
     let argumentPairs: [InitArgumentPairs]
     
-    var description: String {
+    var singletonDeclaration: String {
         let singletonClause = "static var stub: \(name) { \(name)("
         let arguments = argumentPairs.compactMap { $0.asArguments }.joined(separator: ", ")
-        if generateInit {
-            let initArguments = argumentPairs.compactMap { $0.asInitDeclaration }.joined(separator: ", ")
-            let body = argumentPairs.compactMap { $0.asInitBodyInitializer }.joined(separator: "\n    ")
-            return """
-            \(singletonClause)\(arguments)) }
-            init(\(initArguments)) {
-                \(body)
-            }
-            """
+        return "\(singletonClause)\(arguments)) }"
+    }
+    
+    var initDeclaration: String? {
+        guard generateInit else {
+            return nil
         }
-        return "    \(singletonClause)\(arguments)) }"
+        let initArguments = argumentPairs.compactMap { $0.asInitDeclaration }.joined(separator: ", ")
+        let body = argumentPairs.compactMap { $0.asInitBodyInitializer }.joined(separator: "\n    ")
+        return """
+        init(\(initArguments)) {
+            \(body)
+        }
+        """
     }
 }
 

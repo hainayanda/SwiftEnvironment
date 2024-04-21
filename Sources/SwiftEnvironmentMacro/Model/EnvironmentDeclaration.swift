@@ -1,13 +1,13 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Nayanda Haberty on 21/4/24.
 //
 
 import Foundation
 
-struct EnvironmentDeclaration: CustomStringConvertible {
+struct EnvironmentDeclaration {
     let isPublic: Bool
     let baseName: String
     let type: String
@@ -19,12 +19,16 @@ struct EnvironmentDeclaration: CustomStringConvertible {
         isPublic ? "public " : ""
     }
     
-    var description: String {
+    var environmentKeyDeclaration: String {
         """
         struct \(derivedName): EnvironmentKey {
             \(accessModifier)static let defaultValue: \(type) = EnvironmentValues.\(baseName)
         }
-        
+        """
+    }
+    
+    var getterSetterDeclaration: String {
+        """
         var \(baseName): \(type) {
             get {
                 self[\(derivedName).self]
