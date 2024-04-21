@@ -113,7 +113,7 @@ class Some {
     let argsReturnClosure: (Int, Int) -> Int
 }
 """
-//swiftlint:disable line_length
+// swiftlint:disable line_length
 private let simpleClassWithClosureExpansion: String = """
 class Some {
     let voidClosure: () -> Void
@@ -145,7 +145,7 @@ class Some {
     }
 }
 """
-//swiftlint:enable line_length
+// swiftlint:enable line_length
 
 private let simpleStructWithClosure: String = """
 @Stubbed
