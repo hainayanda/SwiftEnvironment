@@ -30,4 +30,10 @@ extension MemberBlockItemListSyntax {
             member.decl.as(FunctionDeclSyntax.self)
         }
     }
+    
+    var typeAliases: [TypeAliasDeclSyntax] {
+        compactMap { member in
+            member.decl.as(TypeAliasDeclSyntax.self)
+        }
+    }
 }

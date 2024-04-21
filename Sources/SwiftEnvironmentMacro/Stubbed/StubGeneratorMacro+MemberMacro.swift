@@ -16,9 +16,16 @@ extension StubGeneratorMacro: MemberMacro {
             return []
         }
         let isClass = declaration.isClass
+        
         let defaultValues = try node.defaultValueArguments
             .reduce(into: baseDefaultValues) { partialResult, pair in
                 partialResult[pair.key] = pair.value
+            }
+        
+        let defaultValuesWithAlias: [String: String] = try declaration.memberBlock.members
+            .typeAliases.reduce(into: defaultValues) { partialResult, typeAlias in
+                let alias = typeAlias.name.trimmedDescription
+                partialResult[alias] = try typeAlias.initializer.value.defaultValue(use: partialResult)
             }
         
         let initArguments = declaration.memberBlock.members
@@ -26,7 +33,7 @@ extension StubGeneratorMacro: MemberMacro {
         
         var arguments = try declaration.memberBlock.members
             .variables.patternBindings.withNoInitializers
-            .toArgumentPairs(use: defaultValues)
+            .toArgumentPairs(use: defaultValuesWithAlias)
         
         let matchedInit = initArguments.first { $0.initArgumentsMatch(arguments: arguments) }
         if let matchedInit {
