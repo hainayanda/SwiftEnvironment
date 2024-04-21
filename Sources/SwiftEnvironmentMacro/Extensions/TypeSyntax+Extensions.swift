@@ -12,7 +12,7 @@ extension TypeSyntax {
     func defaultValue(use mappedValue: [String: String]) throws -> String {
         if let value = mappedValue[trimmedDescription] {
             return value
-        } else if description.isVoidPattern{
+        } else if description.isVoidPattern {
             return "Void()"
         } else if self.as(OptionalTypeSyntax.self) != nil || trimmedDescription.isOptionalPattern {
             return "nil"
