@@ -8,12 +8,14 @@
 import Foundation
 
 struct StubInitializer {
+    let isPublicStub: Bool
     let name: String
     let generateInit: Bool
     let argumentPairs: [InitArgumentPairs]
     
     var singletonDeclaration: String {
-        let singletonClause = "static var stub: \(name) { \(name)("
+        let modifier = isPublicStub ? "public " : ""
+        let singletonClause = "\(modifier)static var stub: \(name) { \(name)("
         let arguments = argumentPairs.compactMap { $0.asArguments }.joined(separator: ", ")
         return "\(singletonClause)\(arguments)) }"
     }

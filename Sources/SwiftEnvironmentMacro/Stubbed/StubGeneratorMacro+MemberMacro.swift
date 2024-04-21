@@ -17,6 +17,8 @@ extension StubGeneratorMacro: MemberMacro {
         }
         let isClass = declaration.isClass
         
+        let isPublicStub = node.isPublicStub
+        
         let defaultValues = try node.defaultValueArguments
             .reduce(into: baseDefaultValues) { partialResult, pair in
                 partialResult[pair.key] = pair.value
@@ -40,7 +42,7 @@ extension StubGeneratorMacro: MemberMacro {
             arguments = try arguments.sortToMatch(initArguments: matchedInit)
         }
         
-        let stubInitializer = StubInitializer(name: name, generateInit: matchedInit == nil && isClass, argumentPairs: arguments)
+        let stubInitializer = StubInitializer(isPublicStub: isPublicStub, name: name, generateInit: matchedInit == nil && isClass, argumentPairs: arguments)
         return [stubInitializer.singletonDeclaration, stubInitializer.initDeclaration]
             .compactMap { $0 }
             .map { "\(raw: $0)" }

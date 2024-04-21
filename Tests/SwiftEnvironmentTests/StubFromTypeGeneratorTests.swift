@@ -111,7 +111,7 @@ struct Some {
 """
 
 private let simpleClassWithClosure: String = """
-@Stubbed
+@Stubbed(.publicStub)
 class Some {
     let voidClosure: () -> Void
     let argVoidClosure: (Int) -> Void
@@ -131,7 +131,7 @@ class Some {
     let argReturnClosure: (Int) -> [Int]
     let argsReturnClosure: (Int, Int) -> Int
 
-    static var stub: Some {
+    public static var stub: Some {
         Some(voidClosure: {
             }, argVoidClosure: { _ in
             }, argsVoidClosure: { _, _ in
@@ -193,7 +193,7 @@ struct Some {
 """
 
 private let simpleClassWithDifferentInit: String = """
-@Stubbed
+@Stubbed(.publicStub)
 class Some {
     let int: Int
     var double: Double
@@ -217,7 +217,7 @@ class Some {
         self.int = 0
     }
 
-    static var stub: Some {
+    public static var stub: Some {
         Some(int: 0, double: 0.0)
     }
 
@@ -260,7 +260,7 @@ class Some {
 """
 
 private let simpleClassWithInit: String = """
-@Stubbed
+@Stubbed(.publicStub)
 class Some {
     let int: Int
     var double: Double
@@ -284,7 +284,7 @@ class Some {
         self.double = double
     }
 
-    static var stub: Some {
+    public static var stub: Some {
         Some(int: 0, double: 0.0)
     }
 }
@@ -317,7 +317,7 @@ class Some {
 """
 
 private let simpleStruct: String = """
-@Stubbed
+@Stubbed(.publicStub)
 struct Some {
     let int: Int
     var double: Double
@@ -331,7 +331,7 @@ struct Some {
     var double: Double
     let string: String = ""
 
-    static var stub: Some {
+    public static var stub: Some {
         Some(int: 0, double: 0.0)
     }
 }
