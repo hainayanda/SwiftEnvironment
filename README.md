@@ -9,7 +9,7 @@ SwiftEnvironment is a Swift library designed to simplify environment value manag
 
 ## Requirements
 
-- Swift 5.10 or higher
+- Swift 5.9 or higher
 - iOS 13.0 or higher
 - MacOS 10.15 or higher
 - TVOS 13.0 or higher
@@ -24,7 +24,7 @@ To install using Xcode's Swift Package Manager, follow these steps:
 
 - Go to **File > Swift Package > Add Package Dependency**
 - Enter the URL: **<https://github.com/hainayanda/SwiftEnvironment.git>**
-- Choose **Up to Next Major** for the version rule and set the version to **2.1.0**.
+- Choose **Up to Next Major** for the version rule and set the version to **2.2.0**.
 - Click "Next" and wait for the package to be fetched.
 
 ### Swift Package Manager (Package.swift)
@@ -33,7 +33,7 @@ If you prefer using Package.swift, add SwiftEnvironment as a dependency in your 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "2.1.0"))
+    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "2.2.0"))
 ]
 ```
 
