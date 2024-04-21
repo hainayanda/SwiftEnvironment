@@ -17,6 +17,11 @@ public macro Stubbed() = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
 )
 
+@attached(member, names: arbitrary)
+public macro Stubbed(_ values: DefaultType...) = #externalMacro(
+    module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
+)
+
 @attached(peer, names: suffixed(Stub))
 public macro Stubbed(type: StubType) = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"

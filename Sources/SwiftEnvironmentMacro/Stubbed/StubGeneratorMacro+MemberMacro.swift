@@ -75,6 +75,48 @@ private extension InitializerDeclSyntax {
     }
 }
 
+private extension TypeSyntax {
+    func defaultValue(use mappedValue: [String: String]) throws -> String {
+        if let value = mappedValue[description] {
+            return value
+        } else if description.match(#"^(Void|\(\s*\))$"#) {
+            return "Void()"
+        } else if self.as(OptionalTypeSyntax.self) != nil || description.match(#"^Optional<.+>$"#) {
+            return "nil"
+        } else if self.as(ArrayTypeSyntax.self) != nil {
+            return "[]"
+        } else if let function = self.as(FunctionTypeSyntax.self) {
+            let argumentCount = function.parameters.as(TupleTypeElementListSyntax.self)?.count ?? 0
+            let arguments = (0..<argumentCount).reduce("") { partialResult, _ in
+                if partialResult.isEmpty { return "_" }
+                return "\(partialResult), _"
+            }
+            let argumentsClause = arguments.isEmpty ? "" : "\(arguments) in"
+            let returnClause = try function.returnClause.defaultReturnClause(use: mappedValue)
+            return "{ \(argumentsClause) \(returnClause) }"
+        } else if let tuple = self.as(TupleTypeSyntax.self) {
+            let partial = try tuple.elements.map { element in
+                try element.type.defaultValue(use: mappedValue)
+            }
+            .reduce("") { partialResult, value in
+                if partialResult.isEmpty { return value }
+                return "\(partialResult), \(value)"
+            }
+            return "(\(partial))"
+        } else {
+            throw StubGeneratorMacroError.cannotDetermineDefaultValue(description)
+        }
+    }
+}
+
+private extension ReturnClauseSyntax {
+    func defaultReturnClause(use mappedValue: [String: String]) throws -> String {
+        let value = try type.defaultValue(use: mappedValue)
+        guard value != "Void()" else { return "" }
+        return "return \(value)"
+    }
+}
+
 private extension Array where Element == InitArgumentPairs {
     func initArgumentsMatch(arguments: [InitArgumentPairs]) -> Bool {
         guard arguments.count == self.count else { return false }
@@ -118,13 +160,11 @@ private extension Sequence where Element == PatternBindingSyntax {
     }
     func toArgumentPairs(use mappedValue: [String: String]) throws -> [InitArgumentPairs] {
         try map { binding in
-            guard let type = binding.typeAnnotation?.type.description else {
+            guard let type = binding.typeAnnotation?.type else {
                 throw StubGeneratorMacroError.cannotDetermineType(binding.pattern.trimmedDescription)
             }
-            guard let value = mappedValue[type] else {
-                throw StubGeneratorMacroError.cannotDetermineDefaultValue(type)
-            }
-            return InitArgumentPairs(name: binding.pattern.trimmedDescription, type: type, value: value)
+            let value = try type.defaultValue(use: mappedValue)
+            return InitArgumentPairs(name: binding.pattern.trimmedDescription, type: type.description, value: value)
         }
     }
 }
