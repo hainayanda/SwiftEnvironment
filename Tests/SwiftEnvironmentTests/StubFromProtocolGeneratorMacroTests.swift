@@ -16,7 +16,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleProtocol,
             expandedSource: simpleProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -24,7 +24,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             optionalProtocol,
             expandedSource: optionalProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -32,7 +32,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             arrayProtocol,
             expandedSource: arrayProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -40,7 +40,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             dictionaryProtocol,
             expandedSource: dictionaryProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -48,7 +48,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             classProtocol,
             expandedSource: classProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -56,7 +56,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             superClassProtocol,
             expandedSource: superClassProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -64,7 +64,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             injectValueProtocol,
             expandedSource: injectValueProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -72,7 +72,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             structProtocol,
             expandedSource: structProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -80,7 +80,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             allArgsProtocol,
             expandedSource: allArgsProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
     
@@ -88,7 +88,7 @@ final class StubFromProtocolGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             anyObjectProtocol,
             expandedSource: anyObjectProtocolExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromProtocolGeneratorMacro.self]
         )
     }
 }

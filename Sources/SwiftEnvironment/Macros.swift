@@ -24,12 +24,12 @@ public macro Stubbed(public: Bool = false, _ values: DefaultType...) = #external
 
 @attached(peer, names: suffixed(Stub))
 public macro Stubbed(type: StubType) = #externalMacro(
-    module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
+    module: "SwiftEnvironmentMacro", type: "StubFromProtocolGeneratorMacro"
 )
 
 @attached(peer, names: suffixed(Stub))
 public macro Stubbed(type: StubType, _ values: DefaultType...) = #externalMacro(
-    module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
+    module: "SwiftEnvironmentMacro", type: "StubFromProtocolGeneratorMacro"
 )
 
 public enum StubType {
