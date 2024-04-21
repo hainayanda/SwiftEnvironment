@@ -15,24 +15,43 @@ extension StubGeneratorMacro: PeerMacro {
         guard let protocolSyntax = declaration.as(ProtocolDeclSyntax.self) else {
             return []
         }
-        let isObjectProtocol: Bool = protocolSyntax.inheritanceClause?
-            .inheritedTypes.contains { $0.trimmedDescription == "AnyObject" } ?? false
+        let isObjectProtocol: Bool = protocolSyntax.isObjectProtocol
         let defaultValues = try node.defaultValueArguments
             .reduce(into: baseDefaultValues) { partialResult, pair in
                 partialResult[pair.key] = pair.value
             }
-        let result = try protocolSyntax.defaultInstance(
-            node.typeArgument(
-                for: protocolSyntax.name.text,
-                isObjectProtocol: isObjectProtocol
-            ),
-            with: DefaultValueGenerator(defaultValues: defaultValues)
+        let instanceType = try node.typeArgument(for: protocolSyntax.name.text, isObjectProtocol: isObjectProtocol)
+        let variables = try protocolSyntax.memberBlock.members
+            .variables.patternBindings
+            .toVariableDeclaration(use: defaultValues)
+        let methods = try protocolSyntax.memberBlock.members
+            .methods
+            .toMethodProtocolDeclaration(use: defaultValues)
+        let result = StubDeclaration(
+            instanceType: instanceType,
+            name: protocolSyntax.stubName,
+            variables: variables,
+            methods: methods
         )
         return [ "\(raw: result.description)" ]
     }
 }
 
 // MARK: Private extensions
+
+private extension ProtocolDeclSyntax {
+    var isObjectProtocol: Bool {
+        inheritanceClause?.inheritedTypes.contains {
+            $0.trimmedDescription == "AnyObject" 
+            || $0.trimmedDescription == "class"
+            || $0.trimmedDescription == "NSObject"
+        } ?? false
+    }
+    
+    var stubName: String {
+        "\(name.text)Stub"
+    }
+}
 
 private extension AttributeSyntax {
     
@@ -93,54 +112,34 @@ private extension AttributeSyntax {
     }
 }
 
-private extension VariableDeclSyntax {
-    func mapToVariableProtocolDeclaration(with defaultValues: DefaultValueGenerator) throws -> VariableProtocolDeclaration {
-        guard let pattern = bindings.first?.as(PatternBindingSyntax.self),
-              let name = pattern.pattern.as(IdentifierPatternSyntax.self)?.trimmedDescription,
-              let type = pattern.typeAnnotation?.type.trimmedDescription,
-              let accessors = pattern.accessorBlock?.accessors.as(AccessorDeclListSyntax.self),
-              accessors.contains(where: { $0.accessorSpecifier.text == "get" }) else {
-            throw StubGeneratorMacroError.failedToExtractVariables
+private extension Sequence where Element == FunctionDeclSyntax {
+    func toMethodProtocolDeclaration(use mappedValue: [String: String]) throws -> [MethodProtocolDeclaration] {
+        try map { function in
+            let returnClause = function.signature.returnClause?.as(ReturnClauseSyntax.self)
+            let defaultReturnClause = try returnClause?.defaultReturnClause(use: mappedValue)
+            return MethodProtocolDeclaration(
+                wholeDeclaration: function.trimmedDescription,
+                returnClause: defaultReturnClause ?? ""
+            )
         }
-        let mutable = accessors.contains { $0.accessorSpecifier.text == "set" }
-        return try VariableProtocolDeclaration(
-            name: name, declaration: mutable ? .var: .let, 
-            typeAnnotiation: type,
-            defaultValue: defaultValues.defaultValue(for: type)
-        )
     }
 }
 
-private extension FunctionDeclSyntax {
-    
-    func mapToMethodProtocolDeclaration(with defaultValues: DefaultValueGenerator) throws -> MethodProtocolDeclaration {
-        let returnClause = signature.returnClause?.as(ReturnClauseSyntax.self)
-        let returnType = returnClause?.type.trimmedDescription ?? "Void"
-        return try MethodProtocolDeclaration(
-            wholeDeclaration: trimmedDescription,
-            returnValue: .init(returnType, defaultValue: defaultValues)
-        )
-    }
-}
-
-private extension ProtocolDeclSyntax {
-    func defaultInstance(_ instanceType: StubDeclaration.InstanceType, with defaultValues: DefaultValueGenerator) throws -> StubDeclaration {
-        try StubDeclaration(
-            instanceType: instanceType, name: "\(name.text)Stub",
-            variables: variables(with: defaultValues),
-            methods: methods(with: defaultValues)
-        )
-    }
-    
-    func variables(with defaultValues: DefaultValueGenerator) throws -> [VariableProtocolDeclaration] {
-        try memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self) }
-            .map { try $0.mapToVariableProtocolDeclaration(with: defaultValues) }
-    }
-    
-    func methods(with defaultValues: DefaultValueGenerator) throws -> [MethodProtocolDeclaration] {
-        try memberBlock.members
-            .compactMap { $0.decl.as(FunctionDeclSyntax.self) }
-            .map { try $0.mapToMethodProtocolDeclaration(with: defaultValues) }
+private extension Sequence where Element == PatternBindingSyntax {
+    func toVariableDeclaration(use mappedValue: [String: String]) throws -> [VariableProtocolDeclaration] {
+        try map { binding in
+            guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.trimmedDescription,
+                let type = binding.typeAnnotation?.type,
+                let accessors = binding.accessorBlock?.accessors.as(AccessorDeclListSyntax.self),
+                accessors.contains(where: { $0.accessorSpecifier.text == "get" }) else {
+              throw StubGeneratorMacroError.failedToExtractVariables
+            }
+            let mutable = accessors.contains { $0.accessorSpecifier.text == "set" }
+            return try VariableProtocolDeclaration(
+                name: name, declaration: mutable ? .var: .let,
+                typeAnnotiation: type.trimmedDescription,
+                defaultValue: type.defaultValue(use: mappedValue)
+            )
+        }
     }
 }

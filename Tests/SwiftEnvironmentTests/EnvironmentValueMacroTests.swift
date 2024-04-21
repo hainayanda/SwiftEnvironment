@@ -65,10 +65,10 @@ public extension EnvironmentValues {
 
     var dummy: Some.Dependency {
         get {
-            self[DummySwiftEnvironmentKey.self]
+            self [DummySwiftEnvironmentKey.self]
         }
         set {
-            self[DummySwiftEnvironmentKey.self] = newValue
+            self [DummySwiftEnvironmentKey.self] = newValue
         }
     }
 }
@@ -92,10 +92,10 @@ extension EnvironmentValues {
 
     var dummy: Dependency<Some> {
         get {
-            self[DummySwiftEnvironmentKey.self]
+            self [DummySwiftEnvironmentKey.self]
         }
         set {
-            self[DummySwiftEnvironmentKey.self] = newValue
+            self [DummySwiftEnvironmentKey.self] = newValue
         }
     }
 }
@@ -119,10 +119,10 @@ public extension EnvironmentValues {
 
     var dummy: DummyDependency {
         get {
-            self[DummySwiftEnvironmentKey.self]
+            self [DummySwiftEnvironmentKey.self]
         }
         set {
-            self[DummySwiftEnvironmentKey.self] = newValue
+            self [DummySwiftEnvironmentKey.self] = newValue
         }
     }
 }
@@ -146,10 +146,10 @@ extension EnvironmentValues {
 
     var dummy: DummyDependency {
         get {
-            self[DummySwiftEnvironmentKey.self]
+            self [DummySwiftEnvironmentKey.self]
         }
         set {
-            self[DummySwiftEnvironmentKey.self] = newValue
+            self [DummySwiftEnvironmentKey.self] = newValue
         }
     }
 }
@@ -177,10 +177,10 @@ public extension EnvironmentValues {
 
     var one: DummyDependency {
         get {
-            self[OneSwiftEnvironmentKey.self]
+            self [OneSwiftEnvironmentKey.self]
         }
         set {
-            self[OneSwiftEnvironmentKey.self] = newValue
+            self [OneSwiftEnvironmentKey.self] = newValue
         }
     }
 
@@ -190,10 +190,10 @@ public extension EnvironmentValues {
 
     var two: DummyDependency {
         get {
-            self[TwoSwiftEnvironmentKey.self]
+            self [TwoSwiftEnvironmentKey.self]
         }
         set {
-            self[TwoSwiftEnvironmentKey.self] = newValue
+            self [TwoSwiftEnvironmentKey.self] = newValue
         }
     }
 
@@ -203,10 +203,10 @@ public extension EnvironmentValues {
 
     var three: DummyDependency {
         get {
-            self[ThreeSwiftEnvironmentKey.self]
+            self [ThreeSwiftEnvironmentKey.self]
         }
         set {
-            self[ThreeSwiftEnvironmentKey.self] = newValue
+            self [ThreeSwiftEnvironmentKey.self] = newValue
         }
     }
 }

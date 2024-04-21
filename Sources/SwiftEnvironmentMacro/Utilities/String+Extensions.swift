@@ -20,4 +20,17 @@ extension String {
     }
     
     var firstCapitalized: String { return prefix(1).capitalized + dropFirst() }
+    
+    var isVoidPattern: Bool {
+        match(#"^(Void|\(\s*\))$"#)
+    }
+    var isOptionalPattern: Bool {
+        match(#"^Optional\s?<.+>$"#)
+    }
+    var isDictionaryPattern: Bool {
+        match(#"^Dictionary\s?<.+>$"#)
+    }
+    var isArrayPattern: Bool {
+        match(#"^Array\s?<.+>$"#)
+    }
 }

@@ -75,6 +75,14 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
             macros: ["Stubbed": StubGeneratorMacro.self]
         )
     }
+    
+    func test_givenSimpleStructWithTypeAlias_shouldGenerateDefault() {
+        assertMacroExpansion(
+            typeAliasStruct,
+            expandedSource: typeAliasStructExpansion,
+            macros: ["Stubbed": StubGeneratorMacro.self]
+        )
+    }
 }
 
 private let simpleStructWithOptional: String = """
@@ -135,6 +143,7 @@ class Some {
                 return 0
             })
     }
+
     init(voidClosure: () -> Void, argVoidClosure: (Int) -> Void, argsVoidClosure: (Int, Int) -> Void, returnClosure: () -> Int?, argReturnClosure: (Int) -> [Int], argsReturnClosure: (Int, Int) -> Int) {
         self.voidClosure = voidClosure
         self.argVoidClosure = argVoidClosure
@@ -211,6 +220,7 @@ class Some {
     static var stub: Some {
         Some(int: 0, double: 0.0)
     }
+
     init(int: Int, double: Double) {
         self.int = int
         self.double = double
@@ -298,6 +308,7 @@ class Some {
     static var stub: Some {
         Some(int: 0, double: 0.0)
     }
+
     init(int: Int, double: Double) {
         self.int = int
         self.double = double
@@ -322,6 +333,25 @@ struct Some {
 
     static var stub: Some {
         Some(int: 0, double: 0.0)
+    }
+}
+"""
+
+private let typeAliasStruct: String = """
+@Stubbed
+struct Some {
+    typealias MyAlias = Int
+    let int: MyAlias
+}
+"""
+
+private let typeAliasStructExpansion: String = """
+struct Some {
+    typealias MyAlias = Int
+    let int: MyAlias
+
+    static var stub: Some {
+        Some(int: 0)
     }
 }
 """

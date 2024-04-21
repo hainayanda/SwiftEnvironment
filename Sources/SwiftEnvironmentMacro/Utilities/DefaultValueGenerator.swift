@@ -8,23 +8,6 @@
 import Foundation
 import SwiftSyntax
 
-struct DefaultValueGenerator {
-    let defaultValues: [String: String]
-    
-    func defaultValue(for type: String) throws -> String {
-        if let defaultValue = defaultValues[type] {
-            return defaultValue
-        } else if type.isOptionalPattern {
-            return "nil"
-        } else if type.isDictionaryPattern {
-            return "[:]"
-        } else if type.isArrayPattern {
-            return "[]"
-        }
-        throw StubGeneratorMacroError.cannotDetermineDefaultValue(type)
-    }
-}
-
 let baseDefaultValues: [String: String] = [
     "Int": "0", "Int8": "0", "Int16": "0", "Int32": "0", "Int64": "0",
     "UInt": "0", "UInt8": "0", "UInt16": "0", "UInt32": "0", "UInt64": "0",
@@ -76,18 +59,5 @@ private extension Sequence where Element == FunctionCallExprSyntax {
             let defaultValue = innerArgs[1].trimmedDescription
             partialResult[type] = defaultValue
         }
-    }
-}
-
-
-private extension String {
-    var isOptionalPattern: Bool {
-        match(#"^.+\?$"#) || match(#"^Optional\s?<.+>$"#)
-    }
-    var isDictionaryPattern: Bool {
-        match(#"^\[[^\[\(:]+:.+\]$"#) || match(#"^Dictionary\s?<.+>$"#)
-    }
-    var isArrayPattern: Bool {
-        (match(#"^\[.+]$"#) && !isDictionaryPattern) || match(#"^Array\s?<.+>$"#)
     }
 }

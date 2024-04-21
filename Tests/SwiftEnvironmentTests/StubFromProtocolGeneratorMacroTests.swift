@@ -255,13 +255,10 @@ struct SomeStub: Some {
     init() {
     }
     func voidFunc() -> Void {
-        return
     }
     func asyncVoidFunc() async {
-        return
     }
     func asyncThrowsVoidFunc() async throws {
-        return
     }
     func defaultFunc() -> Int {
         return 0
