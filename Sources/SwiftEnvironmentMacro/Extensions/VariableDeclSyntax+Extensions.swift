@@ -8,6 +8,14 @@
 import Foundation
 import SwiftSyntax
 
+extension VariableDeclSyntax {
+    var isStatic: Bool {
+        modifiers.contains {
+            $0.name.text == "static"
+        }
+    }
+}
+
 extension Sequence where Element == VariableDeclSyntax {
     var patternBindings: [PatternBindingSyntax] {
         compactMap { declaration in

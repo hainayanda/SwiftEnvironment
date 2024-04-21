@@ -9,6 +9,10 @@ import Foundation
 import SwiftSyntax
 
 extension MemberBlockItemListSyntax {
+    var staticVariables: [VariableDeclSyntax] {
+        variables.filter { $0.isStatic }
+    }
+    
     var variables: [VariableDeclSyntax] {
         compactMap { member in
             member.decl.as(VariableDeclSyntax.self)
