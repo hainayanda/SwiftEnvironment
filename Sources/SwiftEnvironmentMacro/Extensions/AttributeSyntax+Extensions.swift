@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Nayanda Haberty on 21/4/24.
 //
@@ -9,17 +9,12 @@ import Foundation
 import SwiftSyntax
 
 extension AttributeSyntax {
-    var hasModifiers: Bool {
-        guard let firstArgument = arguments?.as(LabeledExprListSyntax.self)?
-            .first?.as(LabeledExprSyntax.self) else { return false }
-        return firstArgument.trimmedDescription == ".publicStub"
-        || firstArgument.trimmedDescription == ".internalStub"
-    }
-    
     var isPublicStub: Bool {
-        guard let firstArgument = arguments?.as(LabeledExprListSyntax.self)?
-            .first?.as(LabeledExprSyntax.self) else { return false }
-        return firstArgument.trimmedDescription == ".publicStub"
+        guard let firstArgument = arguments?.as(LabeledExprListSyntax.self)?.first,
+              firstArgument.label?.trimmedDescription == "public" else {
+            return false
+        }
+        return firstArgument.expression.trimmedDescription == "true"
     }
     
     var defaultValueArguments: [String: String] {
@@ -27,8 +22,7 @@ extension AttributeSyntax {
             let arguments = arguments?.as(LabeledExprListSyntax.self)?
                 .filter { $0.label == nil }
                 .compactMap { $0.as(LabeledExprSyntax.self) }
-            guard var arguments else { return [:] }
-            arguments = hasModifiers ? Array(arguments.suffix(from: 1)) : arguments
+            guard let arguments else { return [:] }
             return try arguments
                 .map { try $0.extractDefaultValueArguments() }
                 .mapToTypeDefaultValueArguments()

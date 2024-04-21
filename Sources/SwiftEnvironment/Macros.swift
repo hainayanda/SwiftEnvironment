@@ -13,13 +13,13 @@ public macro EnvironmentValue() = #externalMacro(
 )
 
 @attached(member, names: arbitrary)
-public macro Stubbed(_ modifier: Modifier = .internalStub) = #externalMacro(
-    module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
+public macro Stubbed(public: Bool = false) = #externalMacro(
+    module: "SwiftEnvironmentMacro", type: "StubFromTypeGeneratorMacro"
 )
 
 @attached(member, names: arbitrary)
-public macro Stubbed(_ modifier: Modifier = .internalStub, _ values: DefaultType...) = #externalMacro(
-    module: "SwiftEnvironmentMacro", type: "StubGeneratorMacro"
+public macro Stubbed(public: Bool = false, _ values: DefaultType...) = #externalMacro(
+    module: "SwiftEnvironmentMacro", type: "StubFromTypeGeneratorMacro"
 )
 
 @attached(peer, names: suffixed(Stub))
@@ -38,11 +38,6 @@ public enum StubType {
     case openClass
     case subclass(AnyClass.Type)
     case openSubclass(AnyClass.Type)
-}
-
-public enum Modifier {
-    case publicStub
-    case internalStub
 }
 
 public struct DefaultType {
