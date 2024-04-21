@@ -39,7 +39,7 @@ extension TypeSyntax {
             }
             return "(\(partial))"
         } else {
-            throw StubGeneratorMacroError.cannotDetermineDefaultValue(trimmedDescription)
+            return "\(trimmedDescription).stub"
         }
     }
 }
