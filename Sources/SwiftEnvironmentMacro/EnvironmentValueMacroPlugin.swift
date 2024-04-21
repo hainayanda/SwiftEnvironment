@@ -12,6 +12,6 @@ import SwiftSyntaxMacros
 @main
 struct EnvironmentValueMacroPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        EnvironmentValueMacro.self, StubGeneratorMacro.self
+        EnvironmentValueMacro.self, StubFromProtocolGeneratorMacro.self, StubFromTypeGeneratorMacro.self
     ]
 }

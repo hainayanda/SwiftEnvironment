@@ -10,7 +10,7 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftSyntax
 
-extension StubGeneratorMacro: PeerMacro {
+struct StubFromProtocolGeneratorMacro: PeerMacro {
     public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard let protocolSyntax = declaration.as(ProtocolDeclSyntax.self) else {
             return []

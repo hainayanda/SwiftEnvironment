@@ -16,7 +16,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleStruct,
             expandedSource: simpleStructExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -24,7 +24,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleClass,
             expandedSource: simpleClassExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -32,7 +32,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleClassWithInit,
             expandedSource: simpleClassWithInitExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -40,7 +40,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleClassWithRandomInit,
             expandedSource: simpleClassWithRandomInitExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -48,7 +48,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleClassWithDifferentInit,
             expandedSource: simpleClassWithDifferentInitExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -56,7 +56,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleStructWithClosure,
             expandedSource: simpleStructWithClosureExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -64,7 +64,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleClassWithClosure,
             expandedSource: simpleClassWithClosureExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -72,7 +72,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             simpleStructWithOptional,
             expandedSource: simpleStructWithOptionalExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
     
@@ -80,7 +80,7 @@ final class StubFromClassAndStructGeneratorMacroTests: XCTestCase {
         assertMacroExpansion(
             typeAliasStruct,
             expandedSource: typeAliasStructExpansion,
-            macros: ["Stubbed": StubGeneratorMacro.self]
+            macros: ["Stubbed": StubFromTypeGeneratorMacro.self]
         )
     }
 }
@@ -111,7 +111,7 @@ struct Some {
 """
 
 private let simpleClassWithClosure: String = """
-@Stubbed(.publicStub)
+@Stubbed(public: true)
 class Some {
     let voidClosure: () -> Void
     let argVoidClosure: (Int) -> Void
@@ -193,7 +193,7 @@ struct Some {
 """
 
 private let simpleClassWithDifferentInit: String = """
-@Stubbed(.publicStub)
+@Stubbed(public: true)
 class Some {
     let int: Int
     var double: Double
@@ -260,7 +260,7 @@ class Some {
 """
 
 private let simpleClassWithInit: String = """
-@Stubbed(.publicStub)
+@Stubbed(public: true)
 class Some {
     let int: Int
     var double: Double
@@ -317,7 +317,7 @@ class Some {
 """
 
 private let simpleStruct: String = """
-@Stubbed(.publicStub)
+@Stubbed(public: true)
 struct Some {
     let int: Int
     var double: Double
