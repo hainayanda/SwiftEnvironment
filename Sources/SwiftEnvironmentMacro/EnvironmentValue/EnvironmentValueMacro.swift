@@ -23,6 +23,7 @@ public struct EnvironmentValueMacro: MemberMacro {
         let isPublic = extensionDeclaration.modifiers.contains { $0.trimmedDescription == "public" }
         return extensionDeclaration.memberBlock.members
             .staticVariables.toEnvironmentDeclarations(isPublic: isPublic)
+            .flatMap { [$0.environmentKeyDeclaration, $0.getterSetterDeclaration] }
             .map { "\(raw: $0)" }
     }
 }
