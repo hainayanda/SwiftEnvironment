@@ -48,7 +48,7 @@ Then, include it in your target:
 
 ## Usage
 
-This library is designed to allow easier dependency management, using exisiting EnvironmentValues from SwiftUI. Adding new environment is very easy:
+This library is designed to allow easier dependency management, using exisiting `EnvironmentValues` from SwiftUI. Adding new environment is very easy:
 
 ```swift
 // protocol with stub
@@ -64,11 +64,18 @@ extension EnvironmentValues {
 }
 ```
 
-Then you can use the keyPath in SwiftUI Environment or GlobalEnvironment:
+Then you can use the keyPath in SwiftUI `Environment` or `GlobalEnvironment`:
 
 ```swift
 @Environment(\.myValue) var switUIValue
 @GlobalEnvironment(\.myValue) var globalValue
+```
+
+You can inject the dependency to SwiftUI Enviromnent as usual:
+
+```swift
+SomeView()
+    .environment(\.myValue, SomeDependency())
 ```
 
 Different than SwiftUI Environment, GlobalEnvironment can be injected and accessed globally:
