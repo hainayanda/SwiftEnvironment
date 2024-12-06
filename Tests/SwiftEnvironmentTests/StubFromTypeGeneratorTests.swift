@@ -5,6 +5,7 @@
 //  Created by Nayanda Haberty on 1/4/24.
 //
 
+#if os(macOS)
 import XCTest
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
@@ -400,3 +401,4 @@ public struct Some {
 
 public typealias SomeStub = Some
 """
+#endif

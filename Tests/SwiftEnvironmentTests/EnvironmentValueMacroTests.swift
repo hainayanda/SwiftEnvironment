@@ -5,6 +5,7 @@
 //  Created by Nayanda Haberty on 15/3/24.
 //
 
+#if os(macOS)
 import XCTest
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
@@ -211,3 +212,4 @@ public extension EnvironmentValues {
     }
 }
 """
+#endif

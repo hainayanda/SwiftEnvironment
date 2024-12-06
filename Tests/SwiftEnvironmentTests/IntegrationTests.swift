@@ -102,14 +102,3 @@ final class IntegrationTests: XCTestCase {
     }
     
 }
-
-typealias DummyEnvironmentKey = EnvironmentValues.DummySwiftEnvironmentKey
-
-@EnvironmentValue
-extension EnvironmentValues {
-    static let dummy = DummyDependencyStub()
-    static let secondDummy = DummyDependencyStub()
-    static let thirdDummy = DummyDependencyStub()
-    static let fourthDummy = DummyDependencyStub()
-    static let fifthDummy: String = "dummy"
-}

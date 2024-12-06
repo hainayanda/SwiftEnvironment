@@ -5,6 +5,7 @@
 //  Created by Nayanda Haberty on 16/3/24.
 //
 
+#if os(macOS)
 import XCTest
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
@@ -460,3 +461,4 @@ struct SomeStub: Some {
     }
 }
 """
+#endif

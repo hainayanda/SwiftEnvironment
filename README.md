@@ -112,6 +112,53 @@ To resolve dependency manually from GlobalResolver, do this:
 let myValue = GlobalResolver.resolve(\.myValue)
 ```
 
+### UIEnvironment
+
+`UIEnvirontment` is similar as SwiftUI Environment but for UIKit. It allows UIKit be injected using `EnvironmentValues` just like SwiftUI. It will also allow shared environment on any it subview or child view controller:
+
+```swift
+// inject SomeDependency to window
+window.environment(\.myValue, SomeDependency())
+```
+
+Then all of it's child view controller and view can access myValue injected from the same window:
+
+```swift
+class MyViewController: UIViewController {
+    // this will be using the injected value from it's parent (UIViewController or UIWindow if it's a root)
+    @UIEnvironment(\.myValue) var myValue
+}
+```
+
+even the view and subview can access the value also:
+
+```swift
+class MyView: UIVIiew { 
+    // this will be using the injected value from it's superview or it's viewController if its a root.
+    @UIEnvironment(\.myValue) var myValue
+}
+```
+
+Same like SwiftUI, if the ViewController is injected, it will use it's own value instead of from its parent. This value then will be inherited to it's child too:
+
+```swift
+// All of its child viewcontroller and view will use this value instead of the one coming from window
+myViewController.environment(\.myValue, SomeOtherDependency())
+```
+
+Updating the enviroment will be reflect to all inheriting value just like SwiftUI. But this will only work on UIKit to UIKit, not UIKit to SwiftUI.
+
+If you are presenting a SwiftUI from UIKit, you can inject the value to the SwiftUI also:
+
+```swift
+// this will inject all of the enviroment to the SwiftUI View
+let hostingController = UIHostingController(
+                            rootView: MySwiftUIView().inheritEnvironment(from: presentingViewController)
+                        )
+presentingViewController.present(hostingController, animated: true)
+```
+
+All of the Enviroment will be injected. But keep in mind that updating an Enviroment will not update the SwiftUI Environment, since it will just resolve all value during inherit.
 
 ### EnvironmentValue macro
 
