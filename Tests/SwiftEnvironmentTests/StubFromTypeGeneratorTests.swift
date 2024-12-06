@@ -5,8 +5,8 @@
 //  Created by Nayanda Haberty on 1/4/24.
 //
 
-import XCTest
 #if os(macOS)
+import XCTest
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
 

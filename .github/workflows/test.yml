@@ -16,9 +16,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Install Dependencies
+      run: swift package resolve
     - name: Pick xcode 15.1
       run: sudo xcode-select -s '/Applications/Xcode_15.1.app/Contents/Developer'
     - name: Build
       run: swift build -v
-    - name: Run tests
+    - name: Run Tests on MacOS
       run: swift test -v
+    - name: Run Tests on iPhone 14 Simulator (iOS 16.0)
+      run: |
+        xcodebuild test \
+          -scheme 'SwiftEnvironment' \
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.0'

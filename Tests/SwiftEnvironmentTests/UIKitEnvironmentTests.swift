@@ -5,6 +5,7 @@
 //  Created by Nayanda Haberty on 6/12/24.
 //
 
+#if canImport(UIKit)
 import XCTest
 @testable import SwiftEnvironment
 import SwiftUI
@@ -84,3 +85,4 @@ private final class ViewControllerUnderTest: UIViewController {
 private final class ViewUnderTest: UIView {
     @UIEnvironment(\.dummy) var dummy: DummyDependencyStub
 }
+#endif
