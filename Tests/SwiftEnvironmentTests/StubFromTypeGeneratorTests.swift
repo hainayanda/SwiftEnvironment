@@ -6,6 +6,7 @@
 //
 
 import XCTest
+#if os(macOS)
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
 
@@ -400,3 +401,4 @@ public struct Some {
 
 public typealias SomeStub = Some
 """
+#endif

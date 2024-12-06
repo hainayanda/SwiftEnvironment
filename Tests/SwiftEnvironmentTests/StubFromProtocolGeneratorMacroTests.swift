@@ -6,6 +6,7 @@
 //
 
 import XCTest
+#if os(macOS)
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
 
@@ -460,3 +461,4 @@ struct SomeStub: Some {
     }
 }
 """
+#endif

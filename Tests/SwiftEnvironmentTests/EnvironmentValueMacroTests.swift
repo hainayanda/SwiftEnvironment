@@ -6,6 +6,7 @@
 //
 
 import XCTest
+#if os(macOS)
 import SwiftSyntaxMacrosTestSupport
 @testable import SwiftEnvironmentMacro
 
@@ -211,3 +212,4 @@ public extension EnvironmentValues {
     }
 }
 """
+#endif
