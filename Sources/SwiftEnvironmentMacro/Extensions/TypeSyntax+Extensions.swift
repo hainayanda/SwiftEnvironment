@@ -9,7 +9,7 @@ import Foundation
 import SwiftSyntax
 
 extension TypeSyntax {
-    func defaultValue(use mappedValue: [String: String]) throws -> String {
+    @inlinable func defaultValue(use mappedValue: [String: String]) throws -> String {
         if let value = mappedValue[trimmedDescription] {
             return value
         } else if description.isVoidPattern {

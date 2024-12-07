@@ -52,7 +52,7 @@ private extension VariableDeclSyntax {
     }
 }
 
-extension Sequence where Element == VariableDeclSyntax {
+private extension Sequence where Element == VariableDeclSyntax {
     func toEnvironmentDeclarations(isPublic: Bool) -> [EnvironmentDeclaration] {
         compactMap { variable in
             guard let name = variable.name,

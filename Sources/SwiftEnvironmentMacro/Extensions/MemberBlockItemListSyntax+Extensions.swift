@@ -9,29 +9,29 @@ import Foundation
 import SwiftSyntax
 
 extension MemberBlockItemListSyntax {
-    var staticVariables: [VariableDeclSyntax] {
+    @inlinable var staticVariables: [VariableDeclSyntax] {
         variables.filter { $0.isStatic }
     }
     
-    var variables: [VariableDeclSyntax] {
+    @inlinable var variables: [VariableDeclSyntax] {
         compactMap { member in
             member.decl.as(VariableDeclSyntax.self)
         }
     }
     
-    var initializers: [InitializerDeclSyntax] {
+    @inlinable var initializers: [InitializerDeclSyntax] {
         compactMap { member in
             member.decl.as(InitializerDeclSyntax.self)
         }
     }
     
-    var methods: [FunctionDeclSyntax] {
+    @inlinable var methods: [FunctionDeclSyntax] {
         compactMap { member in
             member.decl.as(FunctionDeclSyntax.self)
         }
     }
     
-    var typeAliases: [TypeAliasDeclSyntax] {
+    @inlinable var typeAliases: [TypeAliasDeclSyntax] {
         compactMap { member in
             member.decl.as(TypeAliasDeclSyntax.self)
         }

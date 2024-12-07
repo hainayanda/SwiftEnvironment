@@ -12,14 +12,14 @@ struct EnvironmentDeclaration {
     let baseName: String
     let type: String
     
-    var derivedName: String {
+    @inlinable var derivedName: String {
         "\(baseName.firstCapitalized)SwiftEnvironmentKey"
     }
-    var accessModifier: String {
+    @inlinable var accessModifier: String {
         isPublic ? "public " : ""
     }
     
-    var environmentKeyDeclaration: String {
+    @inlinable var environmentKeyDeclaration: String {
         """
         struct \(derivedName): EnvironmentKey {
             \(accessModifier)static let defaultValue: \(type) = EnvironmentValues.\(baseName)
@@ -27,7 +27,7 @@ struct EnvironmentDeclaration {
         """
     }
     
-    var getterSetterDeclaration: String {
+    @inlinable var getterSetterDeclaration: String {
         """
         var \(baseName): \(type) {
             get {

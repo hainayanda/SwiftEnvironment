@@ -13,7 +13,7 @@ struct VariableProtocolDeclaration: CustomStringConvertible {
     let typeAnnotiation: String
     let defaultValue: String
     
-    var description: String {
+    @inlinable var description: String {
         "\(declaration.rawValue) \(name): \(typeAnnotiation) = \(defaultValue)"
     }
 }

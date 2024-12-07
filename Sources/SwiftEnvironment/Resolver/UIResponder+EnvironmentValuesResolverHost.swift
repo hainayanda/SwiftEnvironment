@@ -14,7 +14,7 @@ private var underlyingResolverKey: Void = ()
 
 extension UIResponder: EnvironmentValuesResolverHost {
     
-    var environmentValuesResolver: EnvironmentValuesResolving {
+    @usableFromInline var environmentValuesResolver: EnvironmentValuesResolving {
         guard let currentEnv = underlyingResolver else {
             let newEnv = InheritEnvironmentValuesResolver { [weak self] in
                 self?.next?.environmentValuesResolver
@@ -34,7 +34,7 @@ extension UIResponder: EnvironmentValuesResolverHost {
         }
     }
     
-    public func environmentValuePublisher<V>(for keyPath: KeyPath<EnvironmentValues, V>) -> AnyPublisher<V, Never> {
+    @inlinable public func environmentValuePublisher<V>(for keyPath: KeyPath<EnvironmentValues, V>) -> AnyPublisher<V, Never> {
         environmentValuesResolver.environmentValuePublisher(for: keyPath)
     }
 }

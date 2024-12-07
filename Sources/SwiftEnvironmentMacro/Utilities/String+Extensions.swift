@@ -8,7 +8,7 @@
 import Foundation
 
 extension String {
-    func match(_ regex: String) -> Bool {
+    @inlinable func match(_ regex: String) -> Bool {
         do {
             let regex = try NSRegularExpression(pattern: regex, options: .anchorsMatchLines)
             let stringRange = NSRange(location: .zero, length: utf16.count)
@@ -19,18 +19,18 @@ extension String {
         }
     }
     
-    var firstCapitalized: String { return prefix(1).capitalized + dropFirst() }
+    @inlinable var firstCapitalized: String { return prefix(1).capitalized + dropFirst() }
     
-    var isVoidPattern: Bool {
+    @inlinable var isVoidPattern: Bool {
         match(#"^(Void|\(\s*\))$"#)
     }
-    var isOptionalPattern: Bool {
+    @inlinable var isOptionalPattern: Bool {
         match(#"^Optional\s?<.+>$"#)
     }
-    var isDictionaryPattern: Bool {
+    @inlinable var isDictionaryPattern: Bool {
         match(#"^Dictionary\s?<.+>$"#)
     }
-    var isArrayPattern: Bool {
+    @inlinable var isArrayPattern: Bool {
         match(#"^Array\s?<.+>$"#)
     }
 }

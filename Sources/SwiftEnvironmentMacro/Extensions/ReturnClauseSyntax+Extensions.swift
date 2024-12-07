@@ -9,7 +9,7 @@ import Foundation
 import SwiftSyntax
 
 extension ReturnClauseSyntax {
-    func defaultReturnClause(use mappedValue: [String: String]) throws -> String {
+    @inlinable func defaultReturnClause(use mappedValue: [String: String]) throws -> String {
         let value = try type.defaultValue(use: mappedValue)
         guard value != "Void()" else { return "" }
         return "return \(value)"

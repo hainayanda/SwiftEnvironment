@@ -22,6 +22,7 @@ public struct GlobalResolver {
             environment(keyPath, resolveOn: queue, resolver: value)
         }
     
+    @inlinable
     @discardableResult
     public static func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -39,6 +40,7 @@ public struct GlobalResolver {
             transient(keyPath, resolveOn: queue, resolver: value)
         }
     
+    @inlinable
     @discardableResult
     public static func transient<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -56,6 +58,7 @@ public struct GlobalResolver {
             weak(keyPath, resolveOn: queue, resolver: value)
         }
     
+    @inlinable
     @discardableResult
     public static func weak<V: AnyObject>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -64,6 +67,7 @@ public struct GlobalResolver {
             EnvironmentValuesResolver.global.weak(keyPath, resolveOn: queue, resolver: resolver)
         }
     
+    @inlinable
     @discardableResult
     public static func environment<S, V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -71,6 +75,7 @@ public struct GlobalResolver {
             EnvironmentValuesResolver.global.environment(keyPath, use: soureKeyPath)
         }
     
+    @inlinable
     @discardableResult
     public static func environment<S, V1, V2>(
         _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,
@@ -79,6 +84,7 @@ public struct GlobalResolver {
             EnvironmentValuesResolver.global.environment(keyPath1, keyPath2, use: soureKeyPath)
         }
     
+    @inlinable
     @discardableResult
     public static func environment<S, V1, V2, V3>(
         _ keyPath1: WritableKeyPath<EnvironmentValues, V1>,

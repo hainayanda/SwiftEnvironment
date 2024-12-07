@@ -13,7 +13,7 @@ struct StubDeclaration: CustomStringConvertible {
     let variables: [VariableProtocolDeclaration]
     let methods: [MethodProtocolDeclaration]
     
-    var description: String {
+    @inlinable var description: String {
         let declaration = "\(instanceType.declarationString(for: name)) {\n"
         let withStaticStub = "\(declaration)    static var stub: \(instanceType.protocolName) { \(name)() }\n"
         let withVariables = variables.reduce(withStaticStub) { partialResult, variable in
@@ -33,7 +33,7 @@ extension StubDeclaration {
         case `class`(`protocol`: String, superClass: String? = nil, final: Bool = true)
         case `struct`(`protocol`: String)
         
-        func declarationString(for name: String) -> String {
+        @inlinable func declarationString(for name: String) -> String {
             switch self {
             case .class(let protocolName, let superClass, let final):
                 return "\(final ? "final ": "")class \(name): \(superClassClause(for: superClass))\(protocolName)"
@@ -42,12 +42,12 @@ extension StubDeclaration {
             }
         }
         
-        func superClassClause(for superClass: String?) -> String {
+        @inlinable func superClassClause(for superClass: String?) -> String {
             guard let superClass else { return "" }
             return "\(superClass), "
         }
         
-        var protocolName: String {
+        @inlinable var protocolName: String {
             switch self {
             case .class(let protocolName, _, _), .struct(let protocolName):
                 return protocolName

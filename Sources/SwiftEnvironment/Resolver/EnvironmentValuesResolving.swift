@@ -47,6 +47,7 @@ public protocol EnvironmentLifeCycledValuesResolving: EnvironmentValuesResolving
 
 public extension EnvironmentValuesResolving {
     
+    @inlinable
     @discardableResult
     func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -54,6 +55,7 @@ public extension EnvironmentValuesResolving {
             environment(keyPath, resolveOn: nil, resolver: resolver)
         }
     
+    @inlinable
     @discardableResult
     func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -87,6 +89,7 @@ public extension EnvironmentValuesResolving {
 
 public extension EnvironmentLifeCycledValuesResolving {
     
+    @inlinable
     @discardableResult
     func transient<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -94,6 +97,7 @@ public extension EnvironmentLifeCycledValuesResolving {
             transient(keyPath, resolveOn: nil, resolver: resolver)
         }
     
+    @inlinable
     @discardableResult
     func transient<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -102,6 +106,7 @@ public extension EnvironmentLifeCycledValuesResolving {
             transient(keyPath, resolveOn: queue, resolver: value)
         }
     
+    @inlinable
     @discardableResult
     func weak<V: AnyObject>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
@@ -109,6 +114,7 @@ public extension EnvironmentLifeCycledValuesResolving {
             weak(keyPath, resolveOn: nil, resolver: resolver)
         }
     
+    @inlinable
     @discardableResult
     func weak<V: AnyObject>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,

@@ -29,7 +29,7 @@ final class WeakInstanceResolver<Value: AnyObject>: InstanceResolver {
         return instance as? V
     }
     
-    func assign(to view: any View, for keyPath: AnyKeyPath) -> any View {
+    @inlinable func assign(to view: any View, for keyPath: AnyKeyPath) -> any View {
         guard let writableKeyPath = keyPath as? WritableKeyPath<EnvironmentValues, Value>,
               let value = resolve(for: Value.self) else {
             return view

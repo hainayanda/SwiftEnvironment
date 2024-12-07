@@ -14,11 +14,11 @@ public protocol PropertyWrapperDiscardable {
 public struct PropertyWrapperDiscardableControl {
     private let propertyWrapper: PropertyWrapperDiscardable
     
-    init(propertyWrapper: PropertyWrapperDiscardable) {
+    @usableFromInline init(propertyWrapper: PropertyWrapperDiscardable) {
         self.propertyWrapper = propertyWrapper
     }
     
-    func discardValueSet() {
+    @usableFromInline func discardValueSet() {
         propertyWrapper.discardValueSet()
     }
 }
