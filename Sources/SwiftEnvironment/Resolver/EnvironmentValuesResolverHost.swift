@@ -13,12 +13,12 @@ protocol EnvironmentValuesResolverHost: EnvironmentValuesResolving {
 
 extension EnvironmentValuesResolverHost {
     
-    public func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V {
+    @inlinable public func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V {
         environmentValuesResolver.resolve(keyPath)
     }
     
     @discardableResult
-    public func environment<V>(
+    @inlinable public func environment<V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         resolveOn queue: DispatchQueue?,
         resolver: @escaping () -> V) -> Self {
@@ -27,7 +27,7 @@ extension EnvironmentValuesResolverHost {
         }
     
     @discardableResult
-    public func environment<S, V>(
+    @inlinable public func environment<S, V>(
         _ keyPath: WritableKeyPath<EnvironmentValues, V>,
         use soureKeyPath: WritableKeyPath<EnvironmentValues, S>) -> Self {
             environmentValuesResolver.environment(keyPath, use: soureKeyPath)

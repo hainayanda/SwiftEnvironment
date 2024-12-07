@@ -35,7 +35,7 @@ public final class UIEnvironment<Value>: PropertyWrapperDiscardable {
         set { fatalError() }
     }
     
-    public var projectedValue: PropertyWrapperDiscardableControl {
+    @inlinable public var projectedValue: PropertyWrapperDiscardableControl {
         PropertyWrapperDiscardableControl(propertyWrapper: self)
     }
     

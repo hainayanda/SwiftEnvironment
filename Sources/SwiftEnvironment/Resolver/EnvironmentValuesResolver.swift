@@ -10,7 +10,7 @@ import Combine
 
 public class EnvironmentValuesResolver: EnvironmentLifeCycledValuesResolving, EnvironmentValuesRepository {
     
-    static var global: EnvironmentValuesResolver = EnvironmentValuesResolver()
+    @usableFromInline static var global: EnvironmentValuesResolver = EnvironmentValuesResolver()
     
     let defaultEnvironmentValues: EnvironmentValues
     private(set) var underlyingResolvers: [AnyKeyPath: InstanceResolver]

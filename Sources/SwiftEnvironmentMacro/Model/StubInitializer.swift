@@ -13,14 +13,14 @@ struct StubInitializer {
     let generateInit: Bool
     let argumentPairs: [InitArgumentPairs]
     
-    var singletonDeclaration: String {
+    @inlinable var singletonDeclaration: String {
         let modifier = isPublicStub ? "public " : ""
         let singletonClause = "\(modifier)static var stub: \(name) { \(name)("
         let arguments = argumentPairs.compactMap { $0.asArguments }.joined(separator: ", ")
         return "\(singletonClause)\(arguments)) }"
     }
     
-    var initDeclaration: String? {
+    @inlinable var initDeclaration: String? {
         guard generateInit else {
             return nil
         }
@@ -39,21 +39,21 @@ struct InitArgumentPairs {
     let type: String
     let value: String
     
-    init(name: String, type: String, value: String = "") {
+    @inlinable init(name: String, type: String, value: String = "") {
         self.name = name
         self.type = type
         self.value = value
     }
     
-    var asArguments: String {
+    @inlinable var asArguments: String {
         "\(name): \(value)"
     }
     
-    var asInitDeclaration: String {
+    @inlinable var asInitDeclaration: String {
         "\(name): \(type)"
     }
     
-    var asInitBodyInitializer: String {
+    @inlinable var asInitBodyInitializer: String {
         "self.\(name) = \(name)"
     }
 }

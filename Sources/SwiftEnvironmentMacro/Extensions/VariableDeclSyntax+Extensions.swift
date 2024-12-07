@@ -9,7 +9,7 @@ import Foundation
 import SwiftSyntax
 
 extension VariableDeclSyntax {
-    var isStatic: Bool {
+    @inlinable var isStatic: Bool {
         modifiers.contains {
             $0.name.text == "static"
         }
@@ -17,7 +17,7 @@ extension VariableDeclSyntax {
 }
 
 extension Sequence where Element == VariableDeclSyntax {
-    var patternBindings: [PatternBindingSyntax] {
+    @inlinable var patternBindings: [PatternBindingSyntax] {
         compactMap { declaration in
             guard declaration.bindings.count == 1,
                   let binding = declaration.bindings.first?.as(PatternBindingSyntax.self) else {

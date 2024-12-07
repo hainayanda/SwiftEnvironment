@@ -14,7 +14,7 @@ public enum StubGeneratorMacroError: CustomStringConvertible, Error {
     case cannotUseStructForObjectProtocol
     case cannotDetermineType(String)
     
-    public var description: String {
+    @inlinable public var description: String {
         switch self {
         case .failedToExtractVariables:
             return "@Stubbed failed to extract one of variables"

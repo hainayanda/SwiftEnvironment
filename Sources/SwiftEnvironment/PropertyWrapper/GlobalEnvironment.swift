@@ -22,7 +22,7 @@ public final class GlobalEnvironment<Value>: PropertyWrapperDiscardable {
         set { injectedValue = newValue }
     }
     
-    public var projectedValue: PropertyWrapperDiscardableControl {
+    @inlinable public var projectedValue: PropertyWrapperDiscardableControl {
         PropertyWrapperDiscardableControl(propertyWrapper: self)
     }
     
@@ -43,7 +43,7 @@ public final class GlobalEnvironment<Value>: PropertyWrapperDiscardable {
 }
 
 extension Publisher where Failure == Never {
-    func weakAssign<Root: AnyObject>(to keyPath: ReferenceWritableKeyPath<Root, Output>, on object: Root) -> AnyCancellable {
+    @inlinable func weakAssign<Root: AnyObject>(to keyPath: ReferenceWritableKeyPath<Root, Output>, on object: Root) -> AnyCancellable {
         sink { [weak object] output in
             object?[keyPath: keyPath] = output
         }

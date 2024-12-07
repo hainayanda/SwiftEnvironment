@@ -9,7 +9,7 @@ import Foundation
 import SwiftSyntax
 
 extension AttributeSyntax {
-    var isPublicStub: Bool {
+    @inlinable var isPublicStub: Bool {
         guard let firstArgument = arguments?.as(LabeledExprListSyntax.self)?.first,
               firstArgument.label?.trimmedDescription == "public" else {
             return false

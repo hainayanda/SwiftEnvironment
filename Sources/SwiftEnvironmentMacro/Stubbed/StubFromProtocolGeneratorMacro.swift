@@ -11,7 +11,7 @@ import SwiftSyntaxMacros
 import SwiftSyntax
 
 struct StubFromProtocolGeneratorMacro: PeerMacro {
-    public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
+    @inlinable public static func expansion(of node: AttributeSyntax, providingPeersOf declaration: some DeclSyntaxProtocol, in context: some MacroExpansionContext) throws -> [DeclSyntax] {
         guard let protocolSyntax = declaration.as(ProtocolDeclSyntax.self) else {
             return []
         }
