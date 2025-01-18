@@ -14,6 +14,8 @@ protocol EnvironmentValuesRepository {
 
 public protocol EnvironmentValuesResolving: AnyObject {
     
+    var resolversPublisher: AnyPublisher<[AnyKeyPath: InstanceResolver], Never> { get }
+    
     func resolve<V>(_ keyPath: KeyPath<EnvironmentValues, V>) -> V
     
     func environmentValuePublisher<V>(for keyPath: KeyPath<EnvironmentValues, V>) -> AnyPublisher<V, Never>

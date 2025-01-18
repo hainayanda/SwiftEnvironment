@@ -13,9 +13,13 @@ public class EnvironmentValuesResolver: EnvironmentLifeCycledValuesResolving, En
     @usableFromInline static var global: EnvironmentValuesResolver = EnvironmentValuesResolver()
     
     let defaultEnvironmentValues: EnvironmentValues
-    private(set) var underlyingResolvers: [AnyKeyPath: InstanceResolver]
+    @Published private(set) var underlyingResolvers: [AnyKeyPath: InstanceResolver]
     var resolvers: [AnyKeyPath: InstanceResolver] { underlyingResolvers }
     var resolverAssignSubject: PassthroughSubject<(AnyKeyPath, InstanceResolver), Never> = .init()
+    
+    public var resolversPublisher: AnyPublisher<[AnyKeyPath: InstanceResolver], Never> {
+        $underlyingResolvers.eraseToAnyPublisher()
+    }
     
     init(resolvers: [AnyKeyPath: InstanceResolver] = [:]) {
         self.defaultEnvironmentValues = EnvironmentValues()

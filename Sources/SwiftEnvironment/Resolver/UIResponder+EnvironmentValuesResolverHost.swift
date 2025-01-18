@@ -34,6 +34,10 @@ extension UIResponder: EnvironmentValuesResolverHost {
         }
     }
     
+    public var resolversPublisher: AnyPublisher<[AnyKeyPath: InstanceResolver], Never> {
+        environmentValuesResolver.resolversPublisher
+    }
+    
     @inlinable public func environmentValuePublisher<V>(for keyPath: KeyPath<EnvironmentValues, V>) -> AnyPublisher<V, Never> {
         environmentValuesResolver.environmentValuePublisher(for: keyPath)
     }
