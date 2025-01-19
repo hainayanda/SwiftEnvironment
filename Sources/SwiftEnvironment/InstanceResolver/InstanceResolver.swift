@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-protocol InstanceResolver {
+public protocol InstanceResolver {
     func resolve<V>(for type: V.Type) -> V?
     func assign(to view: any View, for keyPath: AnyKeyPath) -> any View
 }

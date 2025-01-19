@@ -158,7 +158,7 @@ let hostingController = UIHostingController(
 presentingViewController.present(hostingController, animated: true)
 ```
 
-All of the Enviroment will be injected. But keep in mind that updating an Enviroment will not update the SwiftUI Environment, since it will just resolve all value during inherit.
+All of the Enviroment will be injected and updated if the environment is updated from the UIKit.
 
 ### EnvironmentValue macro
 
