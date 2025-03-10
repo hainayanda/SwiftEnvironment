@@ -33,6 +33,11 @@ public final class EnvironmentSource: DynamicProperty {
         observe()
     }
     
+    public init(wrappedValue: SwiftEnvironmentValues) {
+        self.wrappedValue = wrappedValue
+        observe()
+    }
+    
     func observe() {
         lastAssignmentCancellable = wrappedValue.assignedResolversSubject
             .map { $0.1.id }

@@ -14,10 +14,11 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     
     private let globalEnvironmentValues = EnvironmentValues.global
     private let keyPath: WritableKeyPath<EnvironmentValues, Value>
-    private var observerCancellable: AnyCancellable?
+    private var cancellables: Set<AnyCancellable> = []
     
+    @State private var lastAssignmentId: UUID?
     @State private var injectedValue: Value?
-    @State private var resolvedValue: Value
+    private lazy var resolvedValue: Value = globalEnvironmentValues[dynamicMember: keyPath]
     public var wrappedValue: Value {
         get { injectedValue ?? resolvedValue }
         set { injectedValue = newValue }
@@ -25,8 +26,7 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     
     public init(_ keyPath: WritableKeyPath<EnvironmentValues, Value>) {
         self.keyPath = keyPath
-        self.resolvedValue = globalEnvironmentValues[dynamicMember: keyPath]
-        self.observeGlobalEnvironment()
+        observeGlobalEnvironment()
     }
     
     public func discardValueSet() {
@@ -34,7 +34,14 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     }
     
     private func observeGlobalEnvironment() {
-        observerCancellable = globalEnvironmentValues.publisher(for: keyPath)
+        globalEnvironmentValues.publisher(for: keyPath)
             .weakAssign(to: \.resolvedValue, on: self)
+            .store(in: &cancellables)
+        
+        globalEnvironmentValues.assignedResolversSubject
+            .map { $0.1.id }
+            .weakAssign(to: \.lastAssignmentId, on: self)
+            .store(in: &cancellables)
+            
     }
 }
