@@ -49,7 +49,7 @@ Then, include it in your target:
 
 ## Usage
 
-This library allow you to utilize `EnvironmentValues` as global managed Environment:
+This library allows you to utilize `EnvironmentValues` as global managed Environment:
 
 ```swift
 // provide environment as usual
