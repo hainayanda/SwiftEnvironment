@@ -8,29 +8,20 @@
 
 import Foundation
 import SwiftEnvironment
+import SwiftUI
 
-@Stubbed(type: .class)
 protocol DummyDependency: AnyObject {
     var id: UUID { get }
 }
 
-@Stubbed
-struct DummyStruct {
-    let id: UUID
+class DummyClass: DummyDependency {
+    let id: UUID = UUID()
 }
 
-@Stubbed
-struct DummyClass {
-    let id: UUID
-}
-
-typealias DummyEnvironmentKey = EnvironmentValues.DummySwiftEnvironmentKey
-
-@EnvironmentValue
 extension EnvironmentValues {
-    static let dummy = DummyDependencyStub()
-    static let secondDummy = DummyDependencyStub()
-    static let thirdDummy = DummyDependencyStub()
-    static let fourthDummy = DummyDependencyStub()
-    static let fifthDummy: String = "dummy"
+    @Entry var dummy: DummyDependency = DummyClass()
+    @Entry var secondDummy: DummyDependency = DummyClass()
+    @Entry var thirdDummy: DummyDependency = DummyClass()
+    @Entry var fourthDummy: DummyDependency = DummyClass()
+    @Entry var fifthDummy: String = "dummy"
 }

@@ -12,7 +12,7 @@ import XCTest
 final class WeakInstanceResolverTests: XCTestCase {
     
     func test_givenResolver_whenResolve_shouldReturnSameInstance() {
-        let resolver = WeakInstanceResolver(queue: nil) { DummyDependencyStub() }
+        let resolver = WeakInstanceResolver(queue: nil) { DummyClass() }
         let resolved1 = resolver.resolve(for: DummyDependency.self)
         let resolved2 = resolver.resolve(for: DummyDependency.self)
         XCTAssertNotNil(resolved1)
@@ -21,13 +21,13 @@ final class WeakInstanceResolverTests: XCTestCase {
     }
     
     func test_givenValue_whenResolveWrongType_shouldReturnNil() {
-        let resolver = WeakInstanceResolver(queue: nil) { DummyDependencyStub() }
+        let resolver = WeakInstanceResolver(queue: nil) { DummyClass() }
         let resolved = resolver.resolve(for: String.self)
         XCTAssertNil(resolved)
     }
     
     func test_givenValue_whenResolveAfterReleased_shouldReturnNewInstance() {
-        let resolver = WeakInstanceResolver(queue: nil) { DummyDependencyStub() }
+        let resolver = WeakInstanceResolver(queue: nil) { DummyClass() }
         var resolved: DummyDependency? = resolver.resolve(for: DummyDependency.self)
         let id1 = resolved!.id
         resolved = nil
@@ -44,7 +44,7 @@ final class WeakInstanceResolverTests: XCTestCase {
                     continuation.resume()
                 }
                 isMainThread = Thread.isMainThread
-                return DummyDependencyStub()
+                return DummyClass()
             }
             _ = resolver.resolve(for: DummyDependency.self)
         }
