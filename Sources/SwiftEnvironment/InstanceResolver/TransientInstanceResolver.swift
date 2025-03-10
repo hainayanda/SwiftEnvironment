@@ -10,7 +10,7 @@ import Chary
 import SwiftUI
 
 struct TransientInstanceResolver<Value>: InstanceResolver {
-    
+    let id: UUID = UUID()
     private let resolver: () -> Value
     private let queue: DispatchQueue?
     

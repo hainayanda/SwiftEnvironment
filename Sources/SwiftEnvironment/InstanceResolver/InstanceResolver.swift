@@ -9,5 +9,6 @@ import Foundation
 import SwiftUI
 
 public protocol InstanceResolver {
+    var id: UUID { get }
     func resolve<V>(for type: V.Type) -> V?
 }

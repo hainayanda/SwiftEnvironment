@@ -10,7 +10,7 @@ import Chary
 import SwiftUI
 
 final class WeakInstanceResolver<Value>: InstanceResolver {
-    
+    let id: UUID = UUID()
     private(set) weak var instance: AnyObject?
     private let resolver: () -> Value
     private let queue: DispatchQueue?

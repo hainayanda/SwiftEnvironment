@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 final class SingletonInstanceResolver<Value>: InstanceResolver {
-    
+    let id: UUID = UUID()
     private(set) var instance: Value?
     private var resolver: (() -> Value)?
     private let queue: DispatchQueue?

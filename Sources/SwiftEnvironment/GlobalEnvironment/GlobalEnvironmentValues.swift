@@ -20,8 +20,8 @@ extension EnvironmentValues {
 public final class GlobalEnvironmentValues {
     
     private let defaultEnvironmentValues: EnvironmentValues = EnvironmentValues()
-    private var underlyingResolvers: [AnyKeyPath: InstanceResolver] = [:]
-    private var assignedResolversSubject: PassthroughSubject<(AnyKeyPath, InstanceResolver), Never> = .init()
+    private(set) var underlyingResolvers: [AnyKeyPath: InstanceResolver] = [:]
+    private(set) var assignedResolversSubject: PassthroughSubject<(AnyKeyPath, InstanceResolver), Never> = .init()
     
     public subscript<V>(dynamicMember keyPath: WritableKeyPath<EnvironmentValues, V>) -> V {
         underlyingResolvers[keyPath]?.resolve(for: V.self) ?? defaultEnvironmentValues[keyPath: keyPath]
