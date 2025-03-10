@@ -26,12 +26,4 @@ struct TransientInstanceResolver<Value>: InstanceResolver {
         }
         return kInstance
     }
-    
-    @inlinable func assign(to view: any View, for keyPath: AnyKeyPath) -> any View {
-        guard let writableKeyPath = keyPath as? WritableKeyPath<EnvironmentValues, Value>,
-              let value = resolve(for: Value.self) else {
-            return view
-        }
-        return view.environment(writableKeyPath, value)
-    }
 }

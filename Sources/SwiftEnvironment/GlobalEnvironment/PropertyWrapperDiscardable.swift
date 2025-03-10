@@ -2,13 +2,20 @@
 //  PropertyWrapperDiscardable.swift
 //  SwiftEnvironment
 //
-//  Created by Nayanda Haberty on 6/11/24.
+//  Created by Nayanda Haberty on 10/03/25.
 //
 
+import Foundation
 
 public protocol PropertyWrapperDiscardable {
     func discardValueSet()
     var projectedValue: PropertyWrapperDiscardableControl { get }
+}
+
+extension PropertyWrapperDiscardable {
+    public var projectedValue: PropertyWrapperDiscardableControl {
+        PropertyWrapperDiscardableControl(propertyWrapper: self)
+    }
 }
 
 public struct PropertyWrapperDiscardableControl {
