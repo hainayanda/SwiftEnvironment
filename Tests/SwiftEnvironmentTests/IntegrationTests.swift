@@ -13,47 +13,22 @@ import SwiftUI
 final class IntegrationTests: XCTestCase {
     
     override func setUp() {
-        EnvironmentValuesResolver.global = EnvironmentValuesResolver()
-    }
-    
-    func test_givenNoInjection_whenGet_shouldReturnDefault() {
-        @GlobalEnvironment(\.dummy) var dummy
-        XCTAssertTrue(dummy === DummyEnvironmentKey.defaultValue)
-    }
-    
-    func test_givenBasicEnvironmentInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.environment(\.dummy, DummyDependencyStub())
-        
-        @GlobalEnvironment(\.dummy) var dummy1
-        @GlobalEnvironment(\.dummy) var dummy2
-        
-        XCTAssertFalse(dummy1 === DummyEnvironmentKey.defaultValue)
-        XCTAssertTrue(dummy1 === dummy2)
+        EnvironmentValues.global = SwiftEnvironmentValues()
     }
     
     func test_givenTransientInjection_whenGet_shouldAlwaysReturnNewValue() {
-        GlobalResolver.transient(\.dummy, DummyDependencyStub())
+        EnvironmentValues.global.transient(\.dummy, DummyClass())
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.dummy) var dummy2
         
-        XCTAssertFalse(dummy1 === DummyEnvironmentKey.defaultValue)
+        XCTAssertFalse(dummy1 === EnvironmentValues.global.dummy)
         XCTAssertFalse(dummy1 === dummy2)
     }
     
-    func test_givenWeakInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.weak(\.dummy, DummyDependencyStub())
-        
-        @GlobalEnvironment(\.dummy) var dummy1
-        @GlobalEnvironment(\.dummy) var dummy2
-        
-        XCTAssertFalse(dummy1 === DummyEnvironmentKey.defaultValue)
-        XCTAssertTrue(dummy1 === dummy2)
-    }
-    
     func test_givenConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.environment(\.dummy, DummyDependencyStub())
-        GlobalResolver.environment(\.secondDummy, use: \.dummy)
+        EnvironmentValues.global.environment(\.dummy, DummyClass())
+        EnvironmentValues.global.environment(\.secondDummy, use: \.dummy)
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.secondDummy) var dummy2
@@ -62,8 +37,8 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenTwoConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.environment(\.dummy, DummyDependencyStub())
-        GlobalResolver.environment(\.secondDummy, \.thirdDummy, use: \.dummy)
+        EnvironmentValues.global.environment(\.dummy, DummyClass())
+        EnvironmentValues.global.environment(\.secondDummy, \.thirdDummy, use: \.dummy)
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.secondDummy) var dummy2
@@ -74,8 +49,8 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenThreeConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
-        GlobalResolver.environment(\.dummy, DummyDependencyStub())
-        GlobalResolver.environment(\.secondDummy, \.thirdDummy, \.fourthDummy, use: \.dummy)
+        EnvironmentValues.global.environment(\.dummy, DummyClass())
+        EnvironmentValues.global.environment(\.secondDummy, \.thirdDummy, \.fourthDummy, use: \.dummy)
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.secondDummy) var dummy2
@@ -88,17 +63,12 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenConnectedInjection_whenGet_shouldReturnDefault() {
-        GlobalResolver.environment(\.dummy, DummyDependencyStub())
-        GlobalResolver.environment(\.fifthDummy, use: \.dummy)
+        EnvironmentValues.global.environment(\.dummy, DummyClass())
+        EnvironmentValues.global.environment(\.fifthDummy, use: \.dummy)
         
         @GlobalEnvironment(\.fifthDummy) var dummy
         
         XCTAssertEqual(dummy, "dummy")
-    }
-    
-    func test_givenClassAndStruct_whenStubbed_shouldHaveStub() {
-        _ = DummyClass.stub
-        _ = DummyStruct.stub
     }
     
 }

@@ -10,7 +10,7 @@ import Chary
 import SwiftUI
 
 struct TransientInstanceResolver<Value>: InstanceResolver {
-    
+    let id: UUID = UUID()
     private let resolver: () -> Value
     private let queue: DispatchQueue?
     
@@ -25,13 +25,5 @@ struct TransientInstanceResolver<Value>: InstanceResolver {
             return nil
         }
         return kInstance
-    }
-    
-    @inlinable func assign(to view: any View, for keyPath: AnyKeyPath) -> any View {
-        guard let writableKeyPath = keyPath as? WritableKeyPath<EnvironmentValues, Value>,
-              let value = resolve(for: Value.self) else {
-            return view
-        }
-        return view.environment(writableKeyPath, value)
     }
 }

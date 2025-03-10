@@ -7,10 +7,11 @@ import CompilerPluginSupport
 let package = Package(
     name: "SwiftEnvironment",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v10_15),
-        .tvOS(.v13),
-        .watchOS(.v6)
+        .iOS(.v15),
+        .macOS(.v12),
+        .tvOS(.v15),
+        .watchOS(.v8),
+        .visionOS(.v1)
     ],
     products: [
         .library(
@@ -19,26 +20,21 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "600.0.1"),
-        .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7"))
+        .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7")),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.58.2")
     ],
     targets: [
         .target(
             name: "SwiftEnvironment",
-            dependencies: ["SwiftEnvironmentMacro", "Chary"]
-        ),
-        .macro(
-            name: "SwiftEnvironmentMacro",
-            dependencies: [
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            dependencies: ["Chary"],
+            plugins: [
+                .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
             ]
         ),
         .testTarget(
             name: "SwiftEnvironmentTests",
             dependencies: [
-                "SwiftEnvironment", "SwiftEnvironmentMacro",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                "SwiftEnvironment"
             ]
         ),
     ]

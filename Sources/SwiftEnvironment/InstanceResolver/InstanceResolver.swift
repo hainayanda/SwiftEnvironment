@@ -9,6 +9,6 @@ import Foundation
 import SwiftUI
 
 public protocol InstanceResolver {
+    var id: UUID { get }
     func resolve<V>(for type: V.Type) -> V?
-    func assign(to view: any View, for keyPath: AnyKeyPath) -> any View
 }
