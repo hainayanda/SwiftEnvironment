@@ -1,5 +1,5 @@
 //
-//  GlobalEnvironmentValues.swift
+//  SwiftEnvironmentValues.swift
 //  SwiftEnvironment
 //
 //  Created by Nayanda Haberty on 10/03/25.
@@ -11,13 +11,13 @@ import Combine
 // MARK: EnvironmentValues + global
 
 extension EnvironmentValues {
-    public internal(set) static var global: GlobalEnvironmentValues = GlobalEnvironmentValues()
+    public internal(set) static var global: SwiftEnvironmentValues = SwiftEnvironmentValues()
 }
 
-// MARK: GlobalEnvironmentValues
+// MARK: SwiftEnvironmentValues
 
 @dynamicMemberLookup
-public final class GlobalEnvironmentValues {
+public final class SwiftEnvironmentValues {
     
     private let defaultEnvironmentValues: EnvironmentValues = EnvironmentValues()
     private(set) var underlyingResolvers: [AnyKeyPath: InstanceResolver] = [:]
@@ -26,6 +26,8 @@ public final class GlobalEnvironmentValues {
     public subscript<V>(dynamicMember keyPath: WritableKeyPath<EnvironmentValues, V>) -> V {
         underlyingResolvers[keyPath]?.resolve(for: V.self) ?? defaultEnvironmentValues[keyPath: keyPath]
     }
+    
+    public init() { }
     
     public func publisher<Value>(for keyPath: WritableKeyPath<EnvironmentValues, Value>) -> AnyPublisher<Value, Never> {
         assignedResolversSubject
@@ -82,7 +84,7 @@ public final class GlobalEnvironmentValues {
 
 // MARK: GlobalEnvironmentValues + Environment
 
-public extension GlobalEnvironmentValues {
+public extension SwiftEnvironmentValues {
     
     @inlinable
     @discardableResult
@@ -118,7 +120,7 @@ public extension GlobalEnvironmentValues {
 
 // MARK: GlobalEnvironmentValues + Transient & Weak
 
-public extension GlobalEnvironmentValues {
+public extension SwiftEnvironmentValues {
     
     @inlinable
     @discardableResult

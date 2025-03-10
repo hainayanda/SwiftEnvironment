@@ -13,7 +13,7 @@ import SwiftUI
 final class IntegrationTests: XCTestCase {
     
     override func setUp() {
-        EnvironmentValues.global = GlobalEnvironmentValues()
+        EnvironmentValues.global = SwiftEnvironmentValues()
     }
     
     func test_givenTransientInjection_whenGet_shouldAlwaysReturnNewValue() {
