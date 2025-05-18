@@ -42,6 +42,5 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
             .map { $0.1.id }
             .weakAssign(to: \.lastAssignmentId, on: self)
             .store(in: &cancellables)
-            
     }
 }
