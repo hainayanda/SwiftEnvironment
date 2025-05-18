@@ -85,6 +85,23 @@ struct MyApp: App {
 }
 ```
 
+or from SwiftUI environment:
+
+```swift
+@main
+struct MyApp: App {
+    
+    @EnvironmentSource(.global) var source
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
+        .environment(\.myValue, MyValue(), injectTo: source)
+    }
+}
+```
+
 Both `@GlobalEnvironment` and `@EnvironmentSource` will be updated when the value is updated from `EnvironmentValue.global` and if used inside SwiftUI View will trigger SwiftUI render event if needed.
 
 ### Transient Environment Values
