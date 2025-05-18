@@ -8,13 +8,33 @@
 import SwiftUI
 
 public extension Scene {
-    func defaultEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, from source: SwiftEnvironmentValues) -> some Scene {
+    nonisolated func defaultEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, from source: SwiftEnvironmentValues) -> some Scene {
         environment(keyPath, source[dynamicMember: keyPath])
+    }
+    
+    nonisolated func environment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, _ value: V, injectTo source: SwiftEnvironmentValues) -> some Scene {
+        source.environment(keyPath, value)
+        return environment(keyPath, value)
+    }
+    
+    nonisolated func weakEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, _ value: V, injectTo source: SwiftEnvironmentValues) -> some Scene {
+        source.weak(keyPath, value)
+        return environment(keyPath, value)
     }
 }
 
 public extension View {
-    func defaultEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, from source: SwiftEnvironmentValues) -> some View {
+    nonisolated func defaultEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, from source: SwiftEnvironmentValues) -> some View {
         environment(keyPath, source[dynamicMember: keyPath])
+    }
+    
+    nonisolated func environment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, _ value: V, injectTo source: SwiftEnvironmentValues) -> some View {
+        source.environment(keyPath, value)
+        return environment(keyPath, value)
+    }
+    
+    nonisolated func weakEnvironment<V>(_ keyPath: WritableKeyPath<EnvironmentValues, V>, _ value: V, injectTo source: SwiftEnvironmentValues) -> some View {
+        source.weak(keyPath, value)
+        return environment(keyPath, value)
     }
 }
