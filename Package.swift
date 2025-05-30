@@ -4,6 +4,20 @@
 import PackageDescription
 import CompilerPluginSupport
 
+// Set this to true to enable swiftlint plugin
+var development: Bool = false
+
+let dependencies: [PackageDescription.Package.Dependency] = [
+    .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7"))
+]
+let pluginsDependencie: [PackageDescription.Package.Dependency] = [
+    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.58.2")
+]
+let packageDependencies: [PackageDescription.Package.Dependency] = development ? dependencies + pluginsDependencie : dependencies
+    
+
+let plugins: [PackageDescription.Target.PluginUsage] = development ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []
+
 let package = Package(
     name: "SwiftEnvironment",
     platforms: [
@@ -19,17 +33,12 @@ let package = Package(
             targets: ["SwiftEnvironment"]
         ),
     ],
-    dependencies: [
-        .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7")),
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.58.2")
-    ],
+    dependencies: packageDependencies,
     targets: [
         .target(
             name: "SwiftEnvironment",
             dependencies: ["Chary"],
-            plugins: [
-                .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
-            ]
+            plugins: plugins
         ),
         .testTarget(
             name: "SwiftEnvironmentTests",
