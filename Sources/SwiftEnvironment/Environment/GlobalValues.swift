@@ -75,8 +75,8 @@ public struct GlobalValues: @unchecked Sendable {
         }
     
     @discardableResult
-    public static func use<S, Value>(
-        _ soureKeyPath: KeyPath<GlobalValues, S>,
+    public static func use<Source, Value>(
+        _ soureKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath: KeyPath<GlobalValues, Value>) -> GlobalValues.Type {
             let defaultValue = GlobalValues()[keyPath: keyPath]
             GlobalValues.atomicAccess {
@@ -123,8 +123,8 @@ public extension GlobalValues {
     
     @inlinable
     @discardableResult
-    static func use<S, Value1, Value2>(
-        _ soureKeyPath: KeyPath<GlobalValues, S>,
+    static func use<Source, Value1, Value2>(
+        _ soureKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath1: KeyPath<GlobalValues, Value1>,
         _ keyPath2: KeyPath<GlobalValues, Value2>) -> GlobalValues.Type {
             use(soureKeyPath, for: keyPath1)
@@ -133,8 +133,8 @@ public extension GlobalValues {
     
     @inlinable
     @discardableResult
-    static func use<S, Value1, Value2, Value3>(
-        _ soureKeyPath: KeyPath<GlobalValues, S>,
+    static func use<Source, Value1, Value2, Value3>(
+        _ soureKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath1: KeyPath<GlobalValues, Value1>,
         _ keyPath2: KeyPath<GlobalValues, Value2>,
         _ keyPath3: KeyPath<GlobalValues, Value3>) -> GlobalValues.Type {

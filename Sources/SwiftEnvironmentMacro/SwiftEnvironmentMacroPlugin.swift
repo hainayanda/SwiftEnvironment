@@ -14,4 +14,4 @@ struct SwiftEnvironmentPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         GlobalEntryMacro.self
     ]
-} 
+}
