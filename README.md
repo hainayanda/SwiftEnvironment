@@ -21,27 +21,27 @@ SwiftEnvironment is a Swift library designed to allow global access to SwiftUI E
 
 ### Swift Package Manager (Xcode)
 
-To install using Xcode's Swift Package Manager, follow these steps:
+To install using Xcode's Swift Package Manager:
 
-- Go to **File > Swift Package > Add Package Dependency**
-- Enter the URL: **<https://github.com/hainayanda/SwiftEnvironment.git>**
-- Choose **Up to Next Major** for the version rule and set the version to **3.0.1**.
-- Click "Next" and wait for the package to be fetched.
+1. Go to **File > Swift Package > Add Package Dependency**
+2. Enter the URL: **<https://github.com/hainayanda/SwiftEnvironment.git>**
+3. Choose **Up to Next Major** for the version rule and set the version to **4.0.0**
+4. Click "Next" and wait for the package to be fetched
 
 ### Swift Package Manager (Package.swift)
 
-If you prefer using Package.swift, add SwiftEnvironment as a dependency in your **Package.swift** file:
+To add SwiftEnvironment as a dependency in your **Package.swift** file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "3.0.1"))
+    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "4.0.0"))
 ]
 ```
 
-Then, include it in your target:
+Then include it in your target:
 
 ```swift
- .target(
+.target(
     name: "MyModule",
     dependencies: ["SwiftEnvironment"]
 )
@@ -49,87 +49,101 @@ Then, include it in your target:
 
 ## Usage
 
-This library allows you to utilize `EnvironmentValues` as global managed Environment:
+### Defining Global Values
+
+Define your global values using the `@GlobalEntry` macro:
 
 ```swift
-// provide environment as usual
-extension EnvironmentValues {
-    @Entry var myValue: SomeDependency = SomeDependency()
+extension GlobalValues {
+    @GlobalEntry
+    var myValue: SomeDependency = SomeDependency()
 }
-
-// assign real dependency so it can be accessed globally
-EnvironmentValue.global
-    .environment(\.myValue, SomeDependency(id: "real-dependency"))
 ```
 
-Then you can access the value from anywhere globally:
+### Accessing Global Values
+
+Access global values directly:
+
+```swift
+let value = GlobalValue.myValue
+```
+
+Or use property wrappers in SwiftUI views:
 
 ```swift
 @GlobalEnvironment(\.myValue) var myValue
 ```
 
-or inject it to SwiftUI Environment by using `@EnvironmentSource`:
+The `@GlobalEnvironment` property wrapper implements `DynamicProperty`, ensuring your view automatically updates whenever the source value changes, similar to SwiftUI's `@Environment`:
 
 ```swift
-@main
-struct MyApp: App {
+struct MyView: View {
+    @GlobalEnvironment(\.myValue) var myValue
     
-    @EnvironmentSource(.global) var source
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .defaultEnvironment(\.myValue, from: source)
+    var body: some View {
+        Text(myValue.description)
     }
 }
 ```
 
-or from SwiftUI environment:
+### Setting Global Values
+
+There are several ways to set and manage global values:
+
+#### Basic Setting
+
+Set a value directly:
 
 ```swift
-@main
-struct MyApp: App {
-    
-    @EnvironmentSource(.global) var source
-    
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .environment(\.myValue, MyValue(), injectTo: source)
-    }
+GlobalValues.environment(\.myValue, SomeNewValue())
+```
+
+#### Transient Values
+
+Create values that are always newly instantiated on access:
+
+```swift
+GlobalValues.transient(\.myValue, SomeNewValue())
+```
+
+#### Weak References
+
+Create values that can be deallocated when no longer referenced:
+
+```swift
+GlobalValues.weak(\.myValue, SomeNewValue())
+```
+
+### Advanced Options
+
+#### Using Closures
+
+You can provide a closure for value creation (all value setters use autoclosure under the hood):
+
+```swift
+GlobalValues.environment(\.myValue) { 
+    SomeNewValue() 
 }
 ```
 
-Both `@GlobalEnvironment` and `@EnvironmentSource` will be updated when the value is updated from `EnvironmentValue.global` and if used inside SwiftUI View will trigger SwiftUI render event if needed.
+#### Queue Specification
 
-### Transient Environment Values
-
-Another injection method for GlobalResolver is `transient`. This method ensures that the value will be newly created when first accessed from GlobalEnvironment property wrapper. To inject, simply call transient from GlobalEnvironment and proceed as usual:
+Specify which DispatchQueue should handle value access:
 
 ```swift
-EnvironmentValue.global
-    .transient(\.myValue, SomeDependency())
+GlobalValues.environment(\.myValue, resolveOn: .main, SomeNewValue())
 ```
 
-### Weak Environment Values
-
-Another injection method for GlobalResolver is `weak`. This method ensures that the value will be stored in a weak variable and will be newly created only when the last resolved value is null. To inject, simply call weak from GlobalEnvironment and proceed as usual:
-
-```swift
-EnvironmentValue.global
-    .weak(\.myValue, SomeDependency())
-```
+Note: Queue specification is available for all value types (environment, transient, and weak).
 
 ## Contributing
 
-Contributions are welcome! Please follow the guidelines in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-MosaicGrid is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+SwiftEnvironment is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
 ## Credits
 
-This project is maintained by [Nayanda Haberty](hainayanda@outlook.com).
+Maintained by [Nayanda Haberty](hainayanda@outlook.com)

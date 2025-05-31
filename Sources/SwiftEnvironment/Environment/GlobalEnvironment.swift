@@ -12,19 +12,18 @@ import SwiftUICore
 @propertyWrapper
 public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDiscardable {
     
-    private let globalEnvironmentValues = EnvironmentValues.global
-    private let keyPath: WritableKeyPath<EnvironmentValues, Value>
+    private let keyPath: KeyPath<GlobalValues, Value>
     private var cancellables: Set<AnyCancellable> = []
     
     @State private var lastAssignmentId: UUID?
     @State private var injectedValue: Value?
-    private lazy var resolvedValue: Value = globalEnvironmentValues[dynamicMember: keyPath]
+    private lazy var resolvedValue: Value = GlobalValues()[keyPath: keyPath]
     public var wrappedValue: Value {
         get { injectedValue ?? resolvedValue }
         set { injectedValue = newValue }
     }
     
-    public init(_ keyPath: WritableKeyPath<EnvironmentValues, Value>) {
+    public init(_ keyPath: KeyPath<GlobalValues, Value>) {
         self.keyPath = keyPath
         observeGlobalEnvironment()
     }
@@ -34,12 +33,13 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     }
     
     private func observeGlobalEnvironment() {
-        globalEnvironmentValues.publisher(for: keyPath)
+        GlobalValues.publisher(for: keyPath)
             .weakAssign(to: \.resolvedValue, on: self)
             .store(in: &cancellables)
         
-        globalEnvironmentValues.assignedResolversSubject
+        GlobalValues.assignedResolversSubject
             .map { $0.1.id }
+            .removeDuplicates()
             .weakAssign(to: \.lastAssignmentId, on: self)
             .store(in: &cancellables)
     }

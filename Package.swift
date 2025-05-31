@@ -8,13 +8,13 @@ import CompilerPluginSupport
 var development: Bool = false
 
 let dependencies: [PackageDescription.Package.Dependency] = [
-    .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7"))
+    .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7")),
+    .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0"..<"601.0.0")
 ]
 let pluginsDependencie: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.58.2")
 ]
 let packageDependencies: [PackageDescription.Package.Dependency] = development ? dependencies + pluginsDependencie : dependencies
-    
 
 let plugins: [PackageDescription.Target.PluginUsage] = development ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []
 
@@ -31,19 +31,28 @@ let package = Package(
         .library(
             name: "SwiftEnvironment",
             targets: ["SwiftEnvironment"]
-        ),
+        )
     ],
     dependencies: packageDependencies,
     targets: [
         .target(
             name: "SwiftEnvironment",
-            dependencies: ["Chary"],
+            dependencies: ["Chary", "SwiftEnvironmentMacro"],
             plugins: plugins
+        ),
+        .macro(
+            name: "SwiftEnvironmentMacro",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ]
         ),
         .testTarget(
             name: "SwiftEnvironmentTests",
             dependencies: [
-                "SwiftEnvironment"
+                "SwiftEnvironment",
+                "SwiftEnvironmentMacro",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
             ]
         ),
     ]
