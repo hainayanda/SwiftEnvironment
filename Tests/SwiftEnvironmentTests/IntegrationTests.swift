@@ -13,22 +13,22 @@ import SwiftUI
 final class IntegrationTests: XCTestCase {
     
     override func setUp() {
-        EnvironmentValues.global = SwiftEnvironmentValues()
+        GlobalValues.reset()
     }
     
     func test_givenTransientInjection_whenGet_shouldAlwaysReturnNewValue() {
-        EnvironmentValues.global.transient(\.dummy, DummyClass())
+        GlobalValues.transient(\.dummy, DummyClass())
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.dummy) var dummy2
         
-        XCTAssertFalse(dummy1 === EnvironmentValues.global.dummy)
+        XCTAssertFalse(dummy1 === GlobalValues.dummy)
         XCTAssertFalse(dummy1 === dummy2)
     }
     
     func test_givenConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
-        EnvironmentValues.global.environment(\.dummy, DummyClass())
-        EnvironmentValues.global.environment(\.secondDummy, use: \.dummy)
+        GlobalValues.environment(\.dummy, DummyClass())
+        GlobalValues.use(\.dummy, for: \.secondDummy)
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.secondDummy) var dummy2
@@ -37,8 +37,8 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenTwoConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
-        EnvironmentValues.global.environment(\.dummy, DummyClass())
-        EnvironmentValues.global.environment(\.secondDummy, \.thirdDummy, use: \.dummy)
+        GlobalValues.environment(\.dummy, DummyClass())
+        GlobalValues.use(\.dummy, for: \.secondDummy, \.thirdDummy)
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.secondDummy) var dummy2
@@ -49,8 +49,8 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenThreeConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
-        EnvironmentValues.global.environment(\.dummy, DummyClass())
-        EnvironmentValues.global.environment(\.secondDummy, \.thirdDummy, \.fourthDummy, use: \.dummy)
+        GlobalValues.environment(\.dummy, DummyClass())
+        GlobalValues.use(\.dummy, for: \.secondDummy, \.thirdDummy, \.fourthDummy)
         
         @GlobalEnvironment(\.dummy) var dummy1
         @GlobalEnvironment(\.secondDummy) var dummy2
@@ -63,8 +63,8 @@ final class IntegrationTests: XCTestCase {
     }
     
     func test_givenConnectedInjection_whenGet_shouldReturnDefault() {
-        EnvironmentValues.global.environment(\.dummy, DummyClass())
-        EnvironmentValues.global.environment(\.fifthDummy, use: \.dummy)
+        GlobalValues.environment(\.dummy, DummyClass())
+        GlobalValues.use(\.dummy, for: \.fifthDummy)
         
         @GlobalEnvironment(\.fifthDummy) var dummy
         

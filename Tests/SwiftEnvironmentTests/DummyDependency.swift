@@ -8,7 +8,6 @@
 
 import Foundation
 import SwiftEnvironment
-import SwiftUI
 
 protocol DummyDependency: AnyObject {
     var id: UUID { get }
@@ -18,10 +17,10 @@ class DummyClass: DummyDependency {
     let id: UUID = UUID()
 }
 
-extension EnvironmentValues {
-    @Entry var dummy: DummyDependency = DummyClass()
-    @Entry var secondDummy: DummyDependency = DummyClass()
-    @Entry var thirdDummy: DummyDependency = DummyClass()
-    @Entry var fourthDummy: DummyDependency = DummyClass()
-    @Entry var fifthDummy: String = "dummy"
+extension GlobalValues {
+    @GlobalEntry var dummy: DummyDependency = DummyClass()
+    @GlobalEntry var secondDummy: DummyDependency = DummyClass()
+    @GlobalEntry var thirdDummy: DummyDependency = DummyClass()
+    @GlobalEntry var fourthDummy: DummyDependency = DummyClass()
+    @GlobalEntry var fifthDummy: String = "dummy"
 }
