@@ -19,14 +19,14 @@ public struct GlobalValues: @unchecked Sendable {
     private(set) static var assignedResolversSubject: PassthroughSubject<(PartialKeyPath<GlobalValues>, InstanceResolver), Never> = .init()
     
     static func reset() {
-        GlobalValues.atomicAccess {
+        GlobalValues.atomicWrite {
             GlobalValues.underlyingResolvers.removeAll()
             GlobalValues.assignedResolversSubject = .init()
         }
     }
     
     public subscript<Value>(_ key: KeyPath<GlobalValues, Value>) -> Value? {
-        GlobalValues.atomicAccess {
+        GlobalValues.atomicRead {
             return GlobalValues.underlyingResolvers[key]?.resolve(for: Value.self)
         }
     }
@@ -83,13 +83,19 @@ public struct GlobalValues: @unchecked Sendable {
         }
     
     private static func assign(resolver: InstanceResolver, to keyPath: PartialKeyPath<GlobalValues>) {
-        atomicAccess {
+        atomicWrite {
             GlobalValues.underlyingResolvers[keyPath] = resolver
             GlobalValues.assignedResolversSubject.send((keyPath, resolver))
         }
     }
     
-    private static func atomicAccess<Result>(_ block: () throws -> Result) rethrows -> Result {
+    private static func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
+        try accessQueue.safeSync {
+            try block()
+        }
+    }
+    
+    private static func atomicWrite<Result>(_ block: () throws -> Result) rethrows -> Result {
         try accessQueue.safeSync(flags: .barrier) {
             try block()
         }
