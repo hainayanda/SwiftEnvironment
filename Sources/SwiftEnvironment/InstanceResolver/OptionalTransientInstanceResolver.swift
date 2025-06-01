@@ -20,9 +20,6 @@ struct OptionalTransientInstanceResolver<Value>: InstanceResolver {
     
     @inlinable func resolve<V>(for type: V.Type) -> V? {
         let instance = queue?.safeSync(execute: resolver) ?? resolver()
-        guard let kInstance = instance as? V else {
-            return nil
-        }
-        return kInstance
+        return instance as? V
     }
 }

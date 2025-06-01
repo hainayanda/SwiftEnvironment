@@ -70,11 +70,11 @@ public struct GlobalValues: @unchecked Sendable {
     
     @discardableResult
     public static func use<Source, Value>(
-        _ soureKeyPath: KeyPath<GlobalValues, Source>,
+        _ sourceKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath: KeyPath<GlobalValues, Value>) -> GlobalValues.Type {
             assign(
                 resolver: OptionalTransientInstanceResolver<Value>(queue: nil) {
-                    return GlobalValues.underlyingResolvers[soureKeyPath]?.resolve(for: Value.self)
+                    return GlobalValues.underlyingResolvers[sourceKeyPath]?.resolve(for: Value.self)
                 },
                 to: keyPath
             )
@@ -122,23 +122,23 @@ public extension GlobalValues {
     @inlinable
     @discardableResult
     static func use<Source, Value1, Value2>(
-        _ soureKeyPath: KeyPath<GlobalValues, Source>,
+        _ sourceKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath1: KeyPath<GlobalValues, Value1>,
         _ keyPath2: KeyPath<GlobalValues, Value2>) -> GlobalValues.Type {
-            use(soureKeyPath, for: keyPath1)
-                .use(soureKeyPath, for: keyPath2)
+            use(sourceKeyPath, for: keyPath1)
+                .use(sourceKeyPath, for: keyPath2)
         }
     
     @inlinable
     @discardableResult
     static func use<Source, Value1, Value2, Value3>(
-        _ soureKeyPath: KeyPath<GlobalValues, Source>,
+        _ sourceKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath1: KeyPath<GlobalValues, Value1>,
         _ keyPath2: KeyPath<GlobalValues, Value2>,
         _ keyPath3: KeyPath<GlobalValues, Value3>) -> GlobalValues.Type {
-            use(soureKeyPath, for: keyPath1)
-                .use(soureKeyPath, for: keyPath2)
-                .use(soureKeyPath, for: keyPath3)
+            use(sourceKeyPath, for: keyPath1)
+                .use(sourceKeyPath, for: keyPath2)
+                .use(sourceKeyPath, for: keyPath3)
         }
 }
 
