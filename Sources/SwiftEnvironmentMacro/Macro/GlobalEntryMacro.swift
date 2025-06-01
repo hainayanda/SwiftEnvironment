@@ -51,7 +51,7 @@ public struct GlobalEntryMacro: AccessorMacro, PeerMacro {
         return [
             DeclSyntax(
                 """
-                private static let ___\(raw: varName): \(raw: typeAnnotation.type.trimmedDescription) = \(initializer)
+                nonisolated(unsafe) private static let ___\(raw: varName): \(raw: typeAnnotation.type.trimmedDescription) = \(initializer)
                 """
             )
         ]
