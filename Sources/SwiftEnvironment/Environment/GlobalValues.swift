@@ -8,11 +8,12 @@
 import Foundation
 import SwiftUICore
 import Combine
+import Chary
 
 @dynamicMemberLookup
 public struct GlobalValues: @unchecked Sendable {
     
-    private static var globalSemaphore: DispatchSemaphore = DispatchSemaphore(value: 1)
+    private static let accessQueue = DispatchQueue(label: "GlobalValues.accessQueue", attributes: .concurrent)
     
     private static var underlyingResolvers: [PartialKeyPath<GlobalValues>: InstanceResolver] = [:]
     private(set) static var assignedResolversSubject: PassthroughSubject<(PartialKeyPath<GlobalValues>, InstanceResolver), Never> = .init()
@@ -46,10 +47,8 @@ public struct GlobalValues: @unchecked Sendable {
         _ keyPath: KeyPath<GlobalValues, Value>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> Value) -> GlobalValues.Type {
-            GlobalValues.atomicAccess {
-                assign(resolver: SingletonInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
-                return GlobalValues.self
-            }
+            assign(resolver: SingletonInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
+            return GlobalValues.self
         }
     
     @discardableResult
@@ -57,10 +56,8 @@ public struct GlobalValues: @unchecked Sendable {
         _ keyPath: KeyPath<GlobalValues, Value>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> Value) -> GlobalValues.Type {
-            GlobalValues.atomicAccess {
-                assign(resolver: TransientInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
-                return GlobalValues.self
-            }
+            assign(resolver: TransientInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
+            return GlobalValues.self
         }
     
     @discardableResult
@@ -68,38 +65,34 @@ public struct GlobalValues: @unchecked Sendable {
         _ keyPath: KeyPath<GlobalValues, Value>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> Value) -> GlobalValues.Type {
-            GlobalValues.atomicAccess {
-                assign(resolver: WeakInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
-                return GlobalValues.self
-            }
+            assign(resolver: WeakInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
+            return GlobalValues.self
         }
     
     @discardableResult
     public static func use<Source, Value>(
         _ soureKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath: KeyPath<GlobalValues, Value>) -> GlobalValues.Type {
-            let defaultValue = GlobalValues()[keyPath: keyPath]
-            GlobalValues.atomicAccess {
-                assign(
-                    resolver: TransientInstanceResolver<Value>(queue: nil) {
-                        return GlobalValues.underlyingResolvers[soureKeyPath]?.resolve(for: Value.self) ?? defaultValue
-                    },
-                    to: keyPath
-                )
-            }
+            assign(
+                resolver: OptionalTransientInstanceResolver<Value>(queue: nil) {
+                    return GlobalValues.underlyingResolvers[soureKeyPath]?.resolve(for: Value.self)
+                },
+                to: keyPath
+            )
             return self
         }
     
-    // should be called inside atomicAccess closure
     private static func assign(resolver: InstanceResolver, to keyPath: PartialKeyPath<GlobalValues>) {
-        GlobalValues.underlyingResolvers[keyPath] = resolver
-        GlobalValues.assignedResolversSubject.send((keyPath, resolver))
+        atomicAccess {
+            GlobalValues.underlyingResolvers[keyPath] = resolver
+            GlobalValues.assignedResolversSubject.send((keyPath, resolver))
+        }
     }
     
     private static func atomicAccess<Result>(_ block: () throws -> Result) rethrows -> Result {
-        GlobalValues.globalSemaphore.wait()
-        defer { GlobalValues.globalSemaphore.signal() }
-        return try block()
+        try accessQueue.safeSync(flags: .barrier) {
+            try block()
+        }
     }
 }
 
