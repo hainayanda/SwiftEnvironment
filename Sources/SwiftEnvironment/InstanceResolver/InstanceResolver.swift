@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 public protocol InstanceResolver {
     var id: UUID { get }

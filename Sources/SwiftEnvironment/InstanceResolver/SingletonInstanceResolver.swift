@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 final class SingletonInstanceResolver<Value>: InstanceResolver {
     let id: UUID = UUID()

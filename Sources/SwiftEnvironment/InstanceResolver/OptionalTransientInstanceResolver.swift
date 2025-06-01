@@ -7,7 +7,6 @@
 
 import Foundation
 import Chary
-import SwiftUI
 
 struct OptionalTransientInstanceResolver<Value>: InstanceResolver {
     let id: UUID = UUID()

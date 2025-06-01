@@ -8,7 +8,6 @@
 
 import XCTest
 @testable import SwiftEnvironment
-import SwiftUI
 
 final class IntegrationTests: XCTestCase {
     
