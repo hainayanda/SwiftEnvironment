@@ -25,7 +25,7 @@ To install using Xcode's Swift Package Manager:
 
 1. Go to **File > Swift Package > Add Package Dependency**
 2. Enter the URL: **<https://github.com/hainayanda/SwiftEnvironment.git>**
-3. Choose **Up to Next Major** for the version rule and set the version to **4.0.0**
+3. Choose **Up to Next Major** for the version rule and set the version to **4.1.0**
 4. Click "Next" and wait for the package to be fetched
 
 ### Swift Package Manager (Package.swift)
@@ -34,7 +34,7 @@ To add SwiftEnvironment as a dependency in your **Package.swift** file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "4.0.0"))
+    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "4.1.0"))
 ]
 ```
 
