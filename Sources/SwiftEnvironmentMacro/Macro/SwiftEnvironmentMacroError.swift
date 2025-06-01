@@ -10,6 +10,7 @@ import Foundation
 public enum SwiftEnvironmentMacroError: Error, CustomStringConvertible {
     case mustBeUsedInsideGlobalValues
     case expectedInitializerValue
+    case expectedTypeAnnotation
     
     public var description: String {
         switch self {
@@ -17,6 +18,8 @@ public enum SwiftEnvironmentMacroError: Error, CustomStringConvertible {
             return "The @GlobalEntry macro must be used inside a global values extensions."
         case .expectedInitializerValue:
             return "Expected an initializer value for the property annotated with @GlobalEntry."
+        case .expectedTypeAnnotation:
+            return "Expected a type annotation for the property annotated with @GlobalEntry."
         }
     }
 }

@@ -10,20 +10,34 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct GlobalEntryMacro: AccessorMacro {
+public struct GlobalEntryMacro: AccessorMacro, PeerMacro {
     public static func expansion(
         of node: AttributeSyntax,
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [AccessorDeclSyntax] {
-
-//        guard let parentExtension = declaration.parent?.as(ExtensionDeclSyntax.self),
-//              let extendedType = parentExtension.extendedType.as(IdentifierTypeSyntax.self),
-//              extendedType.name.text == "GlobalValues"
-//        else {
-//            throw SwiftEnvironmentMacroError.mustBeUsedInsideGlobalValues
-//        }
-
+        guard let varDecl = declaration.as(VariableDeclSyntax.self),
+              let binding = varDecl.bindings.first,
+              let varName = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text
+        else {
+            throw SwiftEnvironmentMacroError.expectedInitializerValue
+        }
+        return [
+            AccessorDeclSyntax(
+                """
+                get {
+                    self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName)
+                }
+                """
+            )
+        ]
+    }
+    
+    public static func expansion(
+        of node: AttributeSyntax,
+        providingPeersOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
         guard let varDecl = declaration.as(VariableDeclSyntax.self),
               let binding = varDecl.bindings.first,
               let varName = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text,
@@ -31,13 +45,13 @@ public struct GlobalEntryMacro: AccessorMacro {
         else {
             throw SwiftEnvironmentMacroError.expectedInitializerValue
         }
-
+        guard let typeAnnotation = binding.typeAnnotation else {
+            throw SwiftEnvironmentMacroError.expectedTypeAnnotation
+        }
         return [
-            AccessorDeclSyntax(
+            DeclSyntax(
                 """
-                get {
-                    self[\\.\(raw: varName)] ?? \(initializer)
-                }
+                private static let ___\(raw: varName): \(raw: typeAnnotation.type.trimmedDescription) = \(initializer)
                 """
             )
         ]

@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import SwiftUICore
+import SwiftUI
 
 @propertyWrapper
 public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDiscardable {

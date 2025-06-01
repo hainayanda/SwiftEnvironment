@@ -6,26 +6,26 @@
 //
 
 import Foundation
-import SwiftUICore
 import Combine
+import Chary
 
 @dynamicMemberLookup
 public struct GlobalValues: @unchecked Sendable {
     
-    private static var globalSemaphore: DispatchSemaphore = DispatchSemaphore(value: 1)
+    private static let accessQueue = DispatchQueue(label: "GlobalValues.accessQueue", attributes: .concurrent)
     
     private static var underlyingResolvers: [PartialKeyPath<GlobalValues>: InstanceResolver] = [:]
     private(set) static var assignedResolversSubject: PassthroughSubject<(PartialKeyPath<GlobalValues>, InstanceResolver), Never> = .init()
     
     static func reset() {
-        GlobalValues.atomicAccess {
+        GlobalValues.atomicWrite {
             GlobalValues.underlyingResolvers.removeAll()
             GlobalValues.assignedResolversSubject = .init()
         }
     }
     
     public subscript<Value>(_ key: KeyPath<GlobalValues, Value>) -> Value? {
-        GlobalValues.atomicAccess {
+        GlobalValues.atomicRead {
             return GlobalValues.underlyingResolvers[key]?.resolve(for: Value.self)
         }
     }
@@ -46,10 +46,8 @@ public struct GlobalValues: @unchecked Sendable {
         _ keyPath: KeyPath<GlobalValues, Value>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> Value) -> GlobalValues.Type {
-            GlobalValues.atomicAccess {
-                assign(resolver: SingletonInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
-                return GlobalValues.self
-            }
+            assign(resolver: SingletonInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
+            return GlobalValues.self
         }
     
     @discardableResult
@@ -57,10 +55,8 @@ public struct GlobalValues: @unchecked Sendable {
         _ keyPath: KeyPath<GlobalValues, Value>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> Value) -> GlobalValues.Type {
-            GlobalValues.atomicAccess {
-                assign(resolver: TransientInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
-                return GlobalValues.self
-            }
+            assign(resolver: TransientInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
+            return GlobalValues.self
         }
     
     @discardableResult
@@ -68,38 +64,40 @@ public struct GlobalValues: @unchecked Sendable {
         _ keyPath: KeyPath<GlobalValues, Value>,
         resolveOn queue: DispatchQueue? = nil,
         resolver: @escaping () -> Value) -> GlobalValues.Type {
-            GlobalValues.atomicAccess {
-                assign(resolver: WeakInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
-                return GlobalValues.self
-            }
+            assign(resolver: WeakInstanceResolver(queue: queue, resolver: resolver), to: keyPath)
+            return GlobalValues.self
         }
     
     @discardableResult
     public static func use<Source, Value>(
-        _ soureKeyPath: KeyPath<GlobalValues, Source>,
+        _ sourceKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath: KeyPath<GlobalValues, Value>) -> GlobalValues.Type {
-            let defaultValue = GlobalValues()[keyPath: keyPath]
-            GlobalValues.atomicAccess {
-                assign(
-                    resolver: TransientInstanceResolver<Value>(queue: nil) {
-                        return GlobalValues.underlyingResolvers[soureKeyPath]?.resolve(for: Value.self) ?? defaultValue
-                    },
-                    to: keyPath
-                )
-            }
+            assign(
+                resolver: OptionalTransientInstanceResolver<Value>(queue: nil) {
+                    return GlobalValues.underlyingResolvers[sourceKeyPath]?.resolve(for: Value.self)
+                },
+                to: keyPath
+            )
             return self
         }
     
-    // should be called inside atomicAccess closure
     private static func assign(resolver: InstanceResolver, to keyPath: PartialKeyPath<GlobalValues>) {
-        GlobalValues.underlyingResolvers[keyPath] = resolver
-        GlobalValues.assignedResolversSubject.send((keyPath, resolver))
+        atomicWrite {
+            GlobalValues.underlyingResolvers[keyPath] = resolver
+            GlobalValues.assignedResolversSubject.send((keyPath, resolver))
+        }
     }
     
-    private static func atomicAccess<Result>(_ block: () throws -> Result) rethrows -> Result {
-        GlobalValues.globalSemaphore.wait()
-        defer { GlobalValues.globalSemaphore.signal() }
-        return try block()
+    private static func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
+        try accessQueue.safeSync {
+            try block()
+        }
+    }
+    
+    private static func atomicWrite<Result>(_ block: () throws -> Result) rethrows -> Result {
+        try accessQueue.safeSync(flags: .barrier) {
+            try block()
+        }
     }
 }
 
@@ -124,23 +122,23 @@ public extension GlobalValues {
     @inlinable
     @discardableResult
     static func use<Source, Value1, Value2>(
-        _ soureKeyPath: KeyPath<GlobalValues, Source>,
+        _ sourceKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath1: KeyPath<GlobalValues, Value1>,
         _ keyPath2: KeyPath<GlobalValues, Value2>) -> GlobalValues.Type {
-            use(soureKeyPath, for: keyPath1)
-                .use(soureKeyPath, for: keyPath2)
+            use(sourceKeyPath, for: keyPath1)
+                .use(sourceKeyPath, for: keyPath2)
         }
     
     @inlinable
     @discardableResult
     static func use<Source, Value1, Value2, Value3>(
-        _ soureKeyPath: KeyPath<GlobalValues, Source>,
+        _ sourceKeyPath: KeyPath<GlobalValues, Source>,
         for keyPath1: KeyPath<GlobalValues, Value1>,
         _ keyPath2: KeyPath<GlobalValues, Value2>,
         _ keyPath3: KeyPath<GlobalValues, Value3>) -> GlobalValues.Type {
-            use(soureKeyPath, for: keyPath1)
-                .use(soureKeyPath, for: keyPath2)
-                .use(soureKeyPath, for: keyPath3)
+            use(sourceKeyPath, for: keyPath1)
+                .use(sourceKeyPath, for: keyPath2)
+                .use(sourceKeyPath, for: keyPath3)
         }
 }
 

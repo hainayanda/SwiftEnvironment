@@ -7,7 +7,6 @@
 
 import Foundation
 import Chary
-import SwiftUI
 
 final class WeakInstanceResolver<Value>: InstanceResolver {
     let id: UUID = UUID()
