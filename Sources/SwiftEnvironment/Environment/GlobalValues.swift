@@ -30,7 +30,7 @@ public struct GlobalValues: @unchecked Sendable {
         }
     }
     
-    static subscript<Value>(dynamicMember keyPath: KeyPath<GlobalValues, Value>) -> Value {
+    public static subscript<Value>(dynamicMember keyPath: KeyPath<GlobalValues, Value>) -> Value {
         GlobalValues()[keyPath: keyPath]
     }
     
