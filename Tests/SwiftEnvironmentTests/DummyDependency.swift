@@ -17,10 +17,19 @@ class DummyClass: DummyDependency {
     let id: UUID = UUID()
 }
 
+protocol DummySendableDependency: Sendable {
+    var id: UUID { get }
+}
+
+final class DummySendableClass: DummySendableDependency {
+    let id: UUID = UUID()
+}
+
 extension GlobalValues {
     @GlobalEntry var dummy: DummyDependency = DummyClass()
     @GlobalEntry var secondDummy: DummyDependency = DummyClass()
     @GlobalEntry var thirdDummy: DummyDependency = DummyClass()
     @GlobalEntry var fourthDummy: DummyDependency = DummyClass()
     @GlobalEntry var fifthDummy: String = "dummy"
+    @GlobalEntry(.isolated) var sixthDummy: DummyDependency = DummyClass()
 }

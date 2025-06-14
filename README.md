@@ -55,8 +55,15 @@ Define your global values using the `@GlobalEntry` macro:
 
 ```swift
 extension GlobalValues {
-    @GlobalEntry
-    var myValue: SomeDependency = SomeDependency()
+    @GlobalEntry var myValue: SomeDependency = SomeDependency()
+}
+```
+
+if your value is `Sendable`, you need to tell the Macro that it's isolated, unless it will marked as nonisolated and gives a compiler warning:
+
+```swift
+extension GlobalValues {
+    @GlobalEntry(.isolated) var myValue: SomeDependency = SomeDependency()
 }
 ```
 
