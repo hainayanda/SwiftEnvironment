@@ -8,12 +8,7 @@
 import Foundation
 
 @attached(accessor)
-@attached(peer, names: prefixed(___))
-public macro GlobalEntry(_ modifier: StaticModifier = .nonisolated) = #externalMacro(
+@attached(peer, names: prefixed(___), prefixed(___ValueWrapper_))
+public macro GlobalEntry() = #externalMacro(
     module: "SwiftEnvironmentMacro", type: "GlobalEntryMacro"
 )
-
-public enum StaticModifier {
-    case isolated
-    case nonisolated
-}

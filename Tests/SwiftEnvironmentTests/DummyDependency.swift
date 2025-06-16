@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftEnvironment
+import SwiftUICore
 
 protocol DummyDependency: AnyObject {
     var id: UUID { get }
@@ -31,5 +32,5 @@ extension GlobalValues {
     @GlobalEntry var thirdDummy: DummyDependency = DummyClass()
     @GlobalEntry var fourthDummy: DummyDependency = DummyClass()
     @GlobalEntry var fifthDummy: String = "dummy"
-    @GlobalEntry(.isolated) var sixthDummy: DummyDependency = DummyClass()
+    @GlobalEntry var sixthDummy: DummySendableDependency = DummySendableClass()
 }

@@ -17,7 +17,6 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     private let keyPath: KeyPath<GlobalValues, Value>
     private var cancellables: Set<AnyCancellable> = []
     
-    
     @State private var lastAssignmentId: UUID?
     @State private var injectedValue: Value?
     private lazy var resolvedValue: Value = GlobalValues()[keyPath: keyPath]
