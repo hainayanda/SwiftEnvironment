@@ -9,12 +9,13 @@ import Foundation
 import Combine
 import SwiftUI
 
+private let accessQueue = DispatchQueue(label: "GlobalEnvironment.accessQueue", attributes: .concurrent)
+
 @propertyWrapper
 public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDiscardable, @unchecked Sendable {
     
     private let keyPath: KeyPath<GlobalValues, Value>
     private var cancellables: Set<AnyCancellable> = []
-    private let accessQueue = DispatchQueue(label: "GlobalEnvironment.accessQueue_\(UUID())", attributes: .concurrent)
     
     
     @State private var lastAssignmentId: UUID?
