@@ -10,17 +10,27 @@ import Combine
 import SwiftUI
 
 @propertyWrapper
-public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDiscardable {
+public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDiscardable, @unchecked Sendable {
     
     private let keyPath: KeyPath<GlobalValues, Value>
     private var cancellables: Set<AnyCancellable> = []
+    private let accessQueue = DispatchQueue(label: "GlobalEnvironment.accessQueue_\(UUID())", attributes: .concurrent)
+    
     
     @State private var lastAssignmentId: UUID?
     @State private var injectedValue: Value?
     private lazy var resolvedValue: Value = GlobalValues()[keyPath: keyPath]
     public var wrappedValue: Value {
-        get { injectedValue ?? resolvedValue }
-        set { injectedValue = newValue }
+        get {
+            atomicRead {
+                injectedValue ?? resolvedValue
+            }
+        }
+        set {
+            atomicWrite {
+                injectedValue = newValue
+            }
+        }
     }
     
     public init(_ keyPath: KeyPath<GlobalValues, Value>) {
@@ -29,7 +39,9 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     }
     
     public func discardValueSet() {
-        injectedValue = nil
+        atomicWrite {
+            injectedValue = nil
+        }
     }
     
     private func observeGlobalEnvironment() {
@@ -42,5 +54,17 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
             .removeDuplicates()
             .weakAssign(to: \.lastAssignmentId, on: self)
             .store(in: &cancellables)
+    }
+    
+    public func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
+        try accessQueue.safeSync {
+            try block()
+        }
+    }
+    
+    private func atomicWrite<Result>(_ block: () throws -> Result) rethrows -> Result {
+        try accessQueue.safeSync(flags: .barrier) {
+            try block()
+        }
     }
 }
