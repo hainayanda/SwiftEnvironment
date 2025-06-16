@@ -26,7 +26,9 @@ public struct GlobalEntryMacro: AccessorMacro, PeerMacro {
             AccessorDeclSyntax(
                 """
                 get {
-                    self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName)
+                    GlobalValues.atomicRead {
+                        self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName).value
+                    }
                 }
                 """
             )
@@ -45,27 +47,24 @@ public struct GlobalEntryMacro: AccessorMacro, PeerMacro {
         else {
             throw SwiftEnvironmentMacroError.expectedInitializerValue
         }
-        let modifier = isIsolated(node) ? "" : "nonisolated(unsafe) "
-        
         guard let typeAnnotation = binding.typeAnnotation else {
             throw SwiftEnvironmentMacroError.expectedTypeAnnotation
         }
+        let typeString = typeAnnotation.type.trimmedDescription
+        let isolatedWrapper: String = "___ValueWrapper_\(varName)"
         return [
             DeclSyntax(
                 """
-                \(raw: modifier)private static let ___\(raw: varName): \(raw: typeAnnotation.type.trimmedDescription) = \(initializer)
+                private static let ___\(raw: varName): \(raw: isolatedWrapper) = \(raw: isolatedWrapper)()
+                """
+            ),
+            DeclSyntax(
+                """
+                private struct \(raw: isolatedWrapper): @unchecked Sendable {
+                    let value: \(raw: typeString) = \(initializer)
+                }
                 """
             )
         ]
-    }
-    
-    private static func isIsolated(_ node: AttributeSyntax) -> Bool {
-        guard let arguments = node.arguments?.as(LabeledExprListSyntax.self),
-              let firstArgument = arguments.first,
-              let expression = firstArgument.expression.as(MemberAccessExprSyntax.self) else {
-            return false
-        }
-        let description = expression.trimmedDescription
-        return description == ".isolated" || description == "StaticModifier.isolated"
     }
 }

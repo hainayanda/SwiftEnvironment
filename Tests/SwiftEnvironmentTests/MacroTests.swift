@@ -18,13 +18,6 @@ final class MacroTests: XCTestCase {
             macros: ["GlobalEntry": GlobalEntryMacro.self]
         )
     }
-    
-    func test_givenIsolatedEntry_whenExpanded_shouldUseIsolatedExpansion() {
-        assertMacroExpansion(
-            isolated, expandedSource: isolatedExpansion,
-            macros: ["GlobalEntry": GlobalEntryMacro.self]
-        )
-    }
 }
 
 private let basic = #"""
@@ -37,29 +30,17 @@ private let basicExpansion = #"""
 extension GlobalValues {
     var dummy: DummyDependency {
         get {
-            self[\.dummy] ?? GlobalValues.___dummy
+            GlobalValues.atomicRead {
+                self[\.dummy] ?? GlobalValues.___dummy.value
+            }
         }
     }
 
-    nonisolated(unsafe) private static let ___dummy: DummyDependency = DummyClass()
-}
-"""#
+    private static let ___dummy: ___ValueWrapper_dummy = ___ValueWrapper_dummy()
 
-private let isolated = #"""
-extension GlobalValues {
-    @GlobalEntry(.isolated) var dummy: DummyDependency = DummyClass()
-}
-"""#
-
-private let isolatedExpansion = #"""
-extension GlobalValues {
-    var dummy: DummyDependency {
-        get {
-            self[\.dummy] ?? GlobalValues.___dummy
-        }
+    private struct ___ValueWrapper_dummy: @unchecked Sendable {
+        let value: DummyDependency = DummyClass()
     }
-
-    private static let ___dummy: DummyDependency = DummyClass()
 }
 """#
 #endif

@@ -25,6 +25,15 @@ final class IntegrationTests: XCTestCase {
         XCTAssertFalse(dummy1 === dummy2)
     }
     
+    func test_givenSendableInjection_whenGet_shouldAlwaysReturnNewValue() {
+        GlobalValues.transient(\.sixthDummy, DummySendableClass())
+        
+        @GlobalEnvironment(\.sixthDummy) var dummy1
+        @GlobalEnvironment(\.sixthDummy) var dummy2
+        
+        XCTAssertFalse(dummy1.id == dummy2.id)
+    }
+    
     func test_givenConnectedInjection_whenGet_shouldAlwaysReturnSameValue() {
         GlobalValues.environment(\.dummy, DummyClass())
         GlobalValues.use(\.dummy, for: \.secondDummy)
