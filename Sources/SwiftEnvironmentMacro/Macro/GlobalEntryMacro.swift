@@ -26,7 +26,9 @@ public struct GlobalEntryMacro: AccessorMacro, PeerMacro {
             AccessorDeclSyntax(
                 """
                 get {
-                    self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName)
+                    GlobalValues.atomicRead {
+                        self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName)
+                    }
                 }
                 """
             )

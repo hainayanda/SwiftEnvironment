@@ -88,7 +88,7 @@ public struct GlobalValues: @unchecked Sendable {
         }
     }
     
-    private static func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
+    public static func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
         try accessQueue.safeSync {
             try block()
         }
