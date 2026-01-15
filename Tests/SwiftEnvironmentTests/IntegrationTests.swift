@@ -78,5 +78,4 @@ final class IntegrationTests: XCTestCase {
         
         XCTAssertEqual(dummy, "dummy")
     }
-    
 }
