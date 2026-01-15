@@ -51,5 +51,4 @@ final class WeakInstanceResolverTests: XCTestCase {
         XCTAssertNotNil(isMainThread)
         XCTAssertFalse(isMainThread!)
     }
-
 }

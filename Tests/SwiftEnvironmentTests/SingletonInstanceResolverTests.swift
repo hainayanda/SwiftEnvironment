@@ -41,5 +41,4 @@ final class SingletonInstanceResolverTests: XCTestCase {
         XCTAssertNotNil(isMainThread)
         XCTAssertFalse(isMainThread!)
     }
-
 }

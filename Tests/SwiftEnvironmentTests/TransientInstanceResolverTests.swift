@@ -41,5 +41,4 @@ final class TransientInstanceResolverTests: XCTestCase {
         XCTAssertNotNil(isMainThread)
         XCTAssertFalse(isMainThread!)
     }
-
 }

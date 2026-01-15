@@ -13,15 +13,21 @@ final class SingletonInstanceResolver<Value>: InstanceResolver {
     private var resolver: (() -> Value)?
     private let queue: DispatchQueue?
     
+    private let lock: NSLock = NSLock()
+    
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
         self.resolver = resolver
         self.queue = queue
     }
     
     @inlinable func resolve<V>(for type: V.Type) -> V? {
+        lock.lock()
+        defer { lock.unlock() }
         guard let instance else {
-            // this resolver should not be nil in this line
-            let resolver = self.resolver!
+            guard let resolver = self.resolver else {
+                assertionFailure("SingletonInstanceResolver: resolver is nil before instance was created")
+                return nil
+            }
             let newInstance = queue?.safeSync(execute: resolver) ?? resolver()
             self.resolver = nil
             self.instance = newInstance

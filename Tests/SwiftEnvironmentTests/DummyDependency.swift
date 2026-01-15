@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftEnvironment
-import SwiftUICore
+import SwiftUI
 
 protocol DummyDependency: AnyObject {
     var id: UUID { get }
