@@ -51,7 +51,7 @@ Then include it in your target:
 
 ### Defining Global Values
 
-Define your global values using the `@GlobalEntry` macro:
+Define your global values using the `@GlobalEntry` macro. This creates a property with a default value that can be overridden:
 
 ```swift
 extension GlobalValues {
@@ -61,10 +61,10 @@ extension GlobalValues {
 
 ### Accessing Global Values
 
-Access global values directly:
+Access global values directly using dynamic member lookup:
 
 ```swift
-let value = GlobalValue.myValue
+let value = GlobalValues.myValue
 ```
 
 Or use property wrappers in SwiftUI views:
@@ -89,9 +89,9 @@ struct MyView: View {
 
 There are several ways to set and manage global values:
 
-#### Basic Setting
+#### Singleton (environment)
 
-Set a value directly:
+Set a value that is created once and reused:
 
 ```swift
 GlobalValues.environment(\.myValue, SomeNewValue())
@@ -107,11 +107,13 @@ GlobalValues.transient(\.myValue, SomeNewValue())
 
 #### Weak References
 
-Create values that can be deallocated when no longer referenced:
+Create values that can be deallocated when no longer referenced (for class types only):
 
 ```swift
 GlobalValues.weak(\.myValue, SomeNewValue())
 ```
+
+Note: weak values must be reference types; for protocol types, use class-bound protocols or ensure the concrete instance is a class.
 
 ### Advanced Options
 

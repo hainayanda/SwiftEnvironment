@@ -7,11 +7,20 @@
 
 import Foundation
 
+/// Errors that can occur during macro expansion.
+///
+/// These errors are thrown when the `@GlobalEntry` macro is used incorrectly.
 public enum SwiftEnvironmentMacroError: Error, CustomStringConvertible {
+    /// The macro must be used inside a `GlobalValues` extension.
     case mustBeUsedInsideGlobalValues
+    
+    /// Expected an initializer value for the property.
     case expectedInitializerValue
+    
+    /// Expected a type annotation for the property.
     case expectedTypeAnnotation
     
+    /// A human-readable description of the error.
     public var description: String {
         switch self {
         case .mustBeUsedInsideGlobalValues:
