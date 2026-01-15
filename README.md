@@ -67,7 +67,7 @@ Access global values directly using dynamic member lookup:
 let value = GlobalValues.myValue
 ```
 
-Or use property wrappers in SwiftUI views:
+Or use property wrappers:
 
 ```swift
 @GlobalEnvironment(\.myValue) var myValue
