@@ -14,17 +14,28 @@ final class WeakInstanceResolver<Value>: InstanceResolver {
     private let resolver: () -> Value
     private let queue: DispatchQueue?
     
+    private let lock: NSLock = NSLock()
+    
     @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
         self.resolver = resolver
         self.queue = queue
     }
     
     @inlinable func resolve<V>(for type: V.Type) -> V? {
-        guard let instance else {
-            let newInstance = queue?.safeSync(execute: resolver) ?? resolver()
-            self.instance = newInstance as AnyObject
-            return newInstance as? V
+        lock.lock()
+        defer { lock.unlock() }
+        
+        if let instance = instance {
+            return instance as? V
         }
-        return instance as? V
+        
+        let newInstance = queue?.safeSync(execute: resolver) ?? resolver()
+        let isClassInstance = Swift.type(of: newInstance) is AnyClass
+        if !isClassInstance {
+            assertionFailure("WeakInstanceResolver expects a class instance. Use a class-bound protocol or ensure the resolver returns a reference type.")
+        } else {
+            self.instance = newInstance as AnyObject
+        }
+        return newInstance as? V
     }
 }
