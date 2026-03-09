@@ -18,7 +18,13 @@ jobs:
       run: swift package resolve
     - name: Pick xcode 16.2
       run: sudo xcode-select -s '/Applications/Xcode_16.2.app/Contents/Developer'
+    - name: Install Periphery 3.5.1 (Swift 6.0 compatible)
+      run: |
+        curl -fsSL -o periphery.zip https://github.com/peripheryapp/periphery/releases/download/3.5.1/periphery-3.5.1.zip
+        unzip -q periphery.zip
+        chmod +x periphery
+        sudo mv periphery /usr/local/bin/periphery
+        periphery version
     - name: Run Periphery on MacOS
       run: |
-        brew install periphery
         periphery scan --strict
