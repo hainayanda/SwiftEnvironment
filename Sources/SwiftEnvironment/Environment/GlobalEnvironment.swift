@@ -85,13 +85,7 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
             .store(in: &cancellables)
     }
     
-    /// Reads a value atomically using the property wrapper's internal queue.
-    /// 
-    /// This ensures thread-safe access to the property wrapper's state.
-    /// 
-    /// - Parameter block: A closure that reads the value.
-    /// - Returns: The result of the closure.
-    public func atomicRead<Result>(onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
+    private func atomicRead<Result>(onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
         return try atomicRun(onMain: onMain, block)
     }
     
