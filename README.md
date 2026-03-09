@@ -34,7 +34,7 @@ To add SwiftEnvironment as a dependency in your **Package.swift** file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "4.1.5"))
+    .package(url: "https://github.com/hainayanda/SwiftEnvironment.git", .upToNextMajor(from: "4.1.6"))
 ]
 ```
 
