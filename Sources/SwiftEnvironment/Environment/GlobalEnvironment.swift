@@ -33,8 +33,7 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     private var cancellables: Set<AnyCancellable> = []
     
     @State private var lastAssignmentId: UUID?
-    @State private var injectedValueVersion: Int = 0
-
+    @State private var stateInjectedValue: Value?
     private var injectedValue: Value?
 
     private lazy var resolvedValue: Value = GlobalValues()[keyPath: keyPath]
@@ -45,17 +44,15 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     /// Otherwise, it returns the value resolved from the global environment.
     public var wrappedValue: Value {
         get {
-            atomicRead {
+            if Thread.isMainThread, let stateInjectedValue {
+                return stateInjectedValue
+            }
+            return atomicRead {
                 injectedValue ?? resolvedValue
             }
         }
         set {
-            atomicWrite {
-                injectedValue = newValue
-            }
-            DispatchQueue.main.async { [weak self] in
-                self?.injectedValueVersion &+= 1
-            }
+            setInjectedValue(newValue)
         }
     }
     
@@ -72,12 +69,7 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     /// This is useful in testing scenarios where you want to clear a test injection
     /// and return to the normal global value.
     public func discardValueSet() {
-        atomicWrite {
-            injectedValue = nil
-        }
-        DispatchQueue.main.async { [weak self] in
-            self?.injectedValueVersion = 0
-        }
+        setInjectedValue(nil)
     }
     
     private func observeGlobalEnvironment() {
@@ -88,7 +80,7 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
         GlobalValues.assignedResolversSubject
             .map { $0.1.id }
             .removeDuplicates()
-            .receive(on: DispatchQueue.main)
+            .ensureOnMain()
             .weakAssign(to: \.lastAssignmentId, on: self)
             .store(in: &cancellables)
     }
@@ -99,15 +91,27 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     /// 
     /// - Parameter block: A closure that reads the value.
     /// - Returns: The result of the closure.
-    public func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
-        try accessQueue.safeSync {
-            try block()
-        }
+    public func atomicRead<Result>(onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
+        return try atomicRun(onMain: onMain, block)
     }
     
-    private func atomicWrite<Result>(_ block: () throws -> Result) rethrows -> Result {
-        try accessQueue.safeSync(flags: .barrier) {
-            try block()
+    private func atomicWrite<Result>(onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
+        return try atomicRun(flags: .barrier, onMain: onMain, block)
+    }
+    
+    private func atomicRun<Result>(flags: DispatchWorkItemFlags = [], onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
+        guard onMain else {
+            return try accessQueue.safeSync(flags: flags, execute: block)
+        }
+        return try DispatchQueue.main.safeSync(execute: block)
+    }
+
+    private func setInjectedValue(_ value: Value?) {
+        atomicWrite(onMain: true) {
+            stateInjectedValue = value
+        }
+        atomicWrite {
+            injectedValue = value
         }
     }
 }
