@@ -33,11 +33,14 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     private var cancellables: Set<AnyCancellable> = []
     
     @State private var lastAssignmentId: UUID?
-    @State private var injectedValue: Value?
+    @State private var injectedValueVersion: Int = 0
+
+    private var injectedValue: Value?
+
     private lazy var resolvedValue: Value = GlobalValues()[keyPath: keyPath]
-    
+
     /// The value of the property wrapper.
-    /// 
+    ///
     /// If a value has been locally injected (e.g., in a test or preview), this returns the injected value.
     /// Otherwise, it returns the value resolved from the global environment.
     public var wrappedValue: Value {
@@ -49,6 +52,9 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
         set {
             atomicWrite {
                 injectedValue = newValue
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.injectedValueVersion &+= 1
             }
         }
     }
@@ -69,6 +75,9 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
         atomicWrite {
             injectedValue = nil
         }
+        DispatchQueue.main.async { [weak self] in
+            self?.injectedValueVersion = 0
+        }
     }
     
     private func observeGlobalEnvironment() {
@@ -79,6 +88,7 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
         GlobalValues.assignedResolversSubject
             .map { $0.1.id }
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .weakAssign(to: \.lastAssignmentId, on: self)
             .store(in: &cancellables)
     }
