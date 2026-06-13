@@ -6,20 +6,19 @@
 //
 
 import Foundation
-import Chary
 
 struct OptionalTransientInstanceResolver<Value>: InstanceResolver {
     let id: UUID = UUID()
     private let resolver: () -> Value?
-    private let queue: DispatchQueue?
+    private let executor: DispatchQueueExecutor?
     
-    @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value?) {
+    init(queue: DispatchQueue?, resolver: @escaping () -> Value?) {
         self.resolver = resolver
-        self.queue = queue
+        self.executor = queue.map(DispatchQueueExecutor.init)
     }
     
-    @inlinable func resolve<V>(for type: V.Type) -> V? {
-        let instance = queue?.safeSync(execute: resolver) ?? resolver()
+    func resolve<V>(for type: V.Type) -> V? {
+        let instance = executor?.sync(execute: resolver) ?? resolver()
         return instance as? V
     }
 }
