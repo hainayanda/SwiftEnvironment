@@ -8,6 +8,12 @@
 import Foundation
 import Combine
 
+struct GlobalValuesAssignment {
+    let keyPath: PartialKeyPath<GlobalValues>
+    let resolver: InstanceResolver
+    let revision: UInt64
+}
+
 /// A struct that provides global access to environment values using dynamic member lookup.
 /// 
 /// `GlobalValues` is the central registry for all global environment values in your application.
@@ -26,16 +32,28 @@ import Combine
 @dynamicMemberLookup
 public struct GlobalValues: @unchecked Sendable {
     
-    private static let accessQueue = DispatchQueueExecutor(
-        DispatchQueue(label: "GlobalValues.accessQueue", attributes: .concurrent)
-    )
-    
     /// A dictionary mapping key paths to their instance resolvers.
     private static var underlyingResolvers: [PartialKeyPath<GlobalValues>: InstanceResolver] = [:]
-    
+
+    /// The latest assignment revision for each key path.
+    private static var assignmentRevisions: [PartialKeyPath<GlobalValues>: UInt64] = [:]
+
+    /// Serializes access to the global environment registry.
+    private static let accessLock = NSRecursiveLock()
+
     /// A subject that emits when resolvers are assigned to key paths.
     /// This can be used to observe changes to global values.
-    private(set) static var assignedResolversSubject: PassthroughSubject<(PartialKeyPath<GlobalValues>, InstanceResolver), Never> = .init()
+    private(set) static var assignedResolversSubject: PassthroughSubject<GlobalValuesAssignment, Never> = .init()
+
+    static var currentAssignmentsPublisher: AnyPublisher<GlobalValuesAssignment, Never> {
+        assignedResolversSubject
+            .filter { assignment in
+                atomicRead {
+                    assignmentRevisions[assignment.keyPath] == assignment.revision
+                }
+            }
+            .eraseToAnyPublisher()
+    }
     
     /// Resets all global values by clearing resolvers and creating a new subject.
     /// 
@@ -43,6 +61,7 @@ public struct GlobalValues: @unchecked Sendable {
     static func reset() {
         GlobalValues.atomicWrite {
             GlobalValues.underlyingResolvers.removeAll()
+            GlobalValues.assignmentRevisions.removeAll()
             GlobalValues.assignedResolversSubject = .init()
         }
     }
@@ -52,9 +71,10 @@ public struct GlobalValues: @unchecked Sendable {
     /// - Parameter key: The key path to the value.
     /// - Returns: The resolved value, or `nil` if no resolver is registered.
     public subscript<Value>(_ key: KeyPath<GlobalValues, Value>) -> Value? {
-        GlobalValues.atomicRead {
-            return GlobalValues.underlyingResolvers[key]?.resolve(for: Value.self)
+        let resolver = GlobalValues.atomicRead {
+            GlobalValues.underlyingResolvers[key]
         }
+        return resolver?.resolve(for: Value.self)
     }
     
     /// Gets the value for a given key path using dynamic member lookup.
@@ -70,9 +90,9 @@ public struct GlobalValues: @unchecked Sendable {
     /// - Parameter keyPath: The key path to observe.
     /// - Returns: A publisher that emits the current value and any future updates.
     static func publisher<Value>(for keyPath: KeyPath<GlobalValues, Value>) -> AnyPublisher<Value, Never> {
-        assignedResolversSubject
-            .filter { $0.0 == keyPath }
-            .compactMap { $0.1.resolve(for: Value.self) }
+        currentAssignmentsPublisher
+            .filter { $0.keyPath == keyPath }
+            .compactMap { $0.resolver.resolve(for: Value.self) }
             .eraseToAnyPublisher()
     }
     
@@ -164,28 +184,34 @@ public struct GlobalValues: @unchecked Sendable {
     ///   - resolver: The resolver to assign.
     ///   - keyPath: The key path to assign the resolver to.
     private static func assign(resolver: InstanceResolver, to keyPath: PartialKeyPath<GlobalValues>) {
-        atomicWrite {
+        let result: (subject: PassthroughSubject<GlobalValuesAssignment, Never>, assignment: GlobalValuesAssignment) = atomicWrite {
+            let revision = GlobalValues.assignmentRevisions[keyPath, default: 0] + 1
             GlobalValues.underlyingResolvers[keyPath] = resolver
-            GlobalValues.assignedResolversSubject.send((keyPath, resolver))
+            GlobalValues.assignmentRevisions[keyPath] = revision
+            return (
+                GlobalValues.assignedResolversSubject,
+                GlobalValuesAssignment(keyPath: keyPath, resolver: resolver, revision: revision)
+            )
         }
+        result.subject.send(result.assignment)
     }
     
-    /// Reads a value atomically using a concurrent dispatch queue.
+    /// Reads registry state while holding its recursive lock.
     /// 
     /// This ensures thread-safe access to the global values registry.
     /// 
     /// - Parameter block: A closure that reads the value.
     /// - Returns: The result of the closure.
     public static func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
-        try accessQueue.sync {
-            try block()
-        }
+        accessLock.lock()
+        defer { accessLock.unlock() }
+        return try block()
     }
-    
+
     private static func atomicWrite<Result>(_ block: () throws -> Result) rethrows -> Result {
-        try accessQueue.sync(flags: .barrier) {
-            try block()
-        }
+        accessLock.lock()
+        defer { accessLock.unlock() }
+        return try block()
     }
 }
 

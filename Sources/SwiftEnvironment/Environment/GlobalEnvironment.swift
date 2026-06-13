@@ -79,8 +79,8 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
             .weakAssign(to: \.resolvedValue, on: self)
             .store(in: &cancellables)
         
-        GlobalValues.assignedResolversSubject
-            .map { $0.1.id }
+        GlobalValues.currentAssignmentsPublisher
+            .map { $0.resolver.id }
             .removeDuplicates()
             .ensureOnMain()
             .weakAssign(to: \.lastAssignmentId, on: self)
@@ -94,8 +94,12 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     private func atomicWrite<Result>(onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
         return try atomicRun(flags: .barrier, onMain: onMain, block)
     }
-    
-    private func atomicRun<Result>(flags: DispatchWorkItemFlags = [], onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
+
+    private func atomicRun<Result>(
+        flags: DispatchWorkItemFlags = [],
+        onMain: Bool = false,
+        _ block: () throws -> Result
+    ) rethrows -> Result {
         guard onMain else {
             return try accessQueue.sync(flags: flags, execute: block)
         }

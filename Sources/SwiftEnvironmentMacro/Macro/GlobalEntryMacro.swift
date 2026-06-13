@@ -39,9 +39,7 @@ public struct GlobalEntryMacro: AccessorMacro, PeerMacro {
             AccessorDeclSyntax(
                 """
                 get {
-                    GlobalValues.atomicRead {
-                        self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName).value
-                    }
+                    self[\\.\(raw: varName)] ?? GlobalValues.___\(raw: varName).value
                 }
                 """
             )

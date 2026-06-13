@@ -30,9 +30,7 @@ private let basicExpansion = #"""
 extension GlobalValues {
     var dummy: DummyDependency {
         get {
-            GlobalValues.atomicRead {
-                self[\.dummy] ?? GlobalValues.___dummy.value
-            }
+            self[\.dummy] ?? GlobalValues.___dummy.value
         }
     }
 
