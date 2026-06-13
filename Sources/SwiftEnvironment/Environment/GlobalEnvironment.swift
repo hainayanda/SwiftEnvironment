@@ -9,7 +9,9 @@ import Foundation
 import Combine
 import SwiftUI
 
-private let accessQueue = DispatchQueue(label: "GlobalEnvironment.accessQueue", attributes: .concurrent)
+private let accessQueue = DispatchQueueExecutor(
+    DispatchQueue(label: "GlobalEnvironment.accessQueue", attributes: .concurrent)
+)
 
 /// A property wrapper that provides access to global environment values.
 /// 
@@ -95,9 +97,12 @@ public final class GlobalEnvironment<Value>: DynamicProperty, PropertyWrapperDis
     
     private func atomicRun<Result>(flags: DispatchWorkItemFlags = [], onMain: Bool = false, _ block: () throws -> Result) rethrows -> Result {
         guard onMain else {
-            return try accessQueue.safeSync(flags: flags, execute: block)
+            return try accessQueue.sync(flags: flags, execute: block)
         }
-        return try DispatchQueue.main.safeSync(execute: block)
+        if Thread.isMainThread {
+            return try block()
+        }
+        return try DispatchQueue.main.sync(execute: block)
     }
 
     private func setInjectedValue(_ value: Value?) {

@@ -8,7 +8,6 @@ import CompilerPluginSupport
 var development: Bool = false
 
 let dependencies: [PackageDescription.Package.Dependency] = [
-    .package(url: "https://github.com/hainayanda/Chary.git", .upToNextMajor(from: "1.0.7")),
     .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0"..<"601.0.0")
 ]
 let pluginsDependencie: [PackageDescription.Package.Dependency] = [
@@ -37,7 +36,7 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftEnvironment",
-            dependencies: ["Chary", "SwiftEnvironmentMacro"],
+            dependencies: ["SwiftEnvironmentMacro"],
             plugins: plugins
         ),
         .macro(

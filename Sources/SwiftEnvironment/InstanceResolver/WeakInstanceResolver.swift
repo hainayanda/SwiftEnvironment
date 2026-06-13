@@ -6,22 +6,21 @@
 //
 
 import Foundation
-import Chary
 
 final class WeakInstanceResolver<Value>: InstanceResolver {
     let id: UUID = UUID()
     private(set) weak var instance: AnyObject?
     private let resolver: () -> Value
-    private let queue: DispatchQueue?
+    private let executor: DispatchQueueExecutor?
     
     private let lock: NSLock = NSLock()
     
-    @inlinable init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
+    init(queue: DispatchQueue?, resolver: @escaping () -> Value) {
         self.resolver = resolver
-        self.queue = queue
+        self.executor = queue.map(DispatchQueueExecutor.init)
     }
     
-    @inlinable func resolve<V>(for type: V.Type) -> V? {
+    func resolve<V>(for type: V.Type) -> V? {
         lock.lock()
         defer { lock.unlock() }
         
@@ -29,7 +28,7 @@ final class WeakInstanceResolver<Value>: InstanceResolver {
             return instance as? V
         }
         
-        let newInstance = queue?.safeSync(execute: resolver) ?? resolver()
+        let newInstance = executor?.sync(execute: resolver) ?? resolver()
         let isClassInstance = Swift.type(of: newInstance) is AnyClass
         if !isClassInstance {
             assertionFailure("WeakInstanceResolver expects a class instance. Use a class-bound protocol or ensure the resolver returns a reference type.")

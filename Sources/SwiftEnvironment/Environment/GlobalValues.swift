@@ -7,7 +7,6 @@
 
 import Foundation
 import Combine
-import Chary
 
 /// A struct that provides global access to environment values using dynamic member lookup.
 /// 
@@ -27,7 +26,9 @@ import Chary
 @dynamicMemberLookup
 public struct GlobalValues: @unchecked Sendable {
     
-    private static let accessQueue = DispatchQueue(label: "GlobalValues.accessQueue", attributes: .concurrent)
+    private static let accessQueue = DispatchQueueExecutor(
+        DispatchQueue(label: "GlobalValues.accessQueue", attributes: .concurrent)
+    )
     
     /// A dictionary mapping key paths to their instance resolvers.
     private static var underlyingResolvers: [PartialKeyPath<GlobalValues>: InstanceResolver] = [:]
@@ -176,13 +177,13 @@ public struct GlobalValues: @unchecked Sendable {
     /// - Parameter block: A closure that reads the value.
     /// - Returns: The result of the closure.
     public static func atomicRead<Result>(_ block: () throws -> Result) rethrows -> Result {
-        try accessQueue.safeSync {
+        try accessQueue.sync {
             try block()
         }
     }
     
     private static func atomicWrite<Result>(_ block: () throws -> Result) rethrows -> Result {
-        try accessQueue.safeSync(flags: .barrier) {
+        try accessQueue.sync(flags: .barrier) {
             try block()
         }
     }
